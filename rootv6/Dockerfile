@@ -23,14 +23,14 @@ RUN yum -y install epel-release && yum -y update \
     && yum clean all \
     && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
 
-#RUN mkdir -p /usr/local/ \
-#  && cd /usr/local \
-#  && git clone https://github.com/root-project/root.git \
-#  && cd root \
-#  && mkdir compile \
-#  && cd compile \
-#  && cmake -Dfortran=ON -Dpython=ON -Dcxx11=ON -Droofit=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
-#  && make -j$(nproc) && make && make install
+RUN mkdir -p /usr/local/ \
+  && cd /usr/local \
+  && git clone https://github.com/root-project/root.git \
+  && cd root \
+  && mkdir compile \
+  && cd compile \
+  && cmake3 -Dfortran=ON -Dpython=ON -Dcxx11=ON -Droofit=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
+  && make -j$(nproc) && make && make install
 
 EXPOSE 22
-#ENTRYPOINT cd $ROOTSYS && source bin/thisroot.sh && cd && root -b
+ENTRYPOINT cd $ROOTSYS && source bin/thisroot.sh && cd && root -b
