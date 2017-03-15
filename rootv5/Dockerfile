@@ -33,4 +33,5 @@ RUN cd /cern/ \
 	&& source bin/thisroot.sh
 
 EXPOSE 22
-ENTRYPOINT cd $ROOTSYS && source bin/thisroot.sh && cd && root -b
+
+ENTRYPOINT source /usr/local/root/bin/thisroot.sh && root -b
