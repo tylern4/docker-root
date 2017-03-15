@@ -23,15 +23,15 @@ RUN yum -y install epel-release && yum -y update \
     && yum clean all \
     && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
 
-ADD https://github.com/root-project/root/archive/v5-34-36.tar.gz /cern/
+ADD https://github.com/root-project/root/archive/v5-34-36.tar.gz /tmp/
 
-RUN cd /cern/ \
+RUN cd /tmp/ \
 	&& tar -xvf v5-34-36.tar.gz \
+  && rm -f v5-34-36.tar.gz \
 	&& cd root-5-34-36/ \
 	&& ./configure --all --prefix=$ROOTSYS \
 	&& make -j$(nproc) && make && make install \
 	&& source bin/thisroot.sh
 
 EXPOSE 22
-
 ENTRYPOINT source /usr/local/root/bin/thisroot.sh && root -b
