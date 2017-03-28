@@ -9,7 +9,7 @@ ENV DYLD_LIBRARY_PATH /usr/lib:$ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyr
 ENV PYTHONPATH $PYTHONPATH:$ROOTSYS/lib:$ROOTSYS/bindings/pyroot
 
 RUN yum -y install epel-release && yum -y update \
-    && yum install -y perl git cmake gcc-c++ gcc binutils bash \
+    && yum install -y perl git cmake gcc-c++ gcc binutils bash parallel \
     make libX11-devel libXpm-devel libXft-devel libXext-devel xbae-devel libXaw-devel \
     subversion scons patch expat-devel mysql-devel bzip2-devel \
     blas-devel blas-static lapack-devel lapack-static bzip2 tcsh \

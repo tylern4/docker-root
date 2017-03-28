@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:latest
 ENV TERM xterm
 
 COPY zshrc /root/.zshrc
@@ -19,12 +19,13 @@ RUN apt-get -y update && apt-get -y upgrade \
     libmysqlclient-dev libfftw3-dev libcfitsio-dev \
     graphviz-dev libavahi-compat-libdnssd-dev \
     libldap2-dev python-dev libxml2-dev libkrb5-dev \
-    libgsl0-dev libqt4-dev python-pip
+    libgsl0-dev libqt4-dev python-pip wget curl python-tk \
+    texlive-xetex texlive-latex-base \
+    && apt-get clean
 
 RUN cd /tmp/ \
-    && git clone -b v6-06-00-patches https://github.com/root-project/root.git
-
-RUN cd /tmp/root/ \
+    && git clone -b v6-06-00-patches https://github.com/root-project/root.git \
+    && cd /tmp/root/ \
     && mkdir compile \
     && cd compile \
     && cmake -Dfortran=ON -Dpython=ON -Dcxx11=ON -Droofit=ON -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
