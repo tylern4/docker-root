@@ -5,5 +5,5 @@ services:
     - docker
 
 script:
-    - docker build -t tylern4/dev-env dev-env/.
+    - docker build -t tylern4/docker-root rootv5/.
     - docker images -a

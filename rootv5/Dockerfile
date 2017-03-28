@@ -1,4 +1,4 @@
-FROM centos:7
+FROM centos:6.6
 ENV TERM xterm
 
 ENV ROOTSYS /usr/local/root
@@ -27,7 +27,7 @@ ADD https://github.com/root-project/root/archive/v5-34-36.tar.gz /tmp/
 
 RUN cd /tmp/ \
 	&& tar -xvf v5-34-36.tar.gz \
-  && rm -f v5-34-36.tar.gz \
+    && rm -f v5-34-36.tar.gz \
 	&& cd root-5-34-36/ \
 	&& ./configure --all --prefix=$ROOTSYS \
 	&& make -j$(nproc) && make && make install \

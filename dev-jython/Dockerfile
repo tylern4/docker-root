@@ -1,4 +1,4 @@
-FROM tylern4/dev-env:latest
+FROM tylern4/dev-clara:latest
 
 RUN rm -f /usr/local/bin/pip*
 RUN apt-get install -y curl default-jdk
