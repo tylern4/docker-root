@@ -2,8 +2,8 @@ sudo: required
 language: cpp
 
 services:
-  - docker
+    - docker
 
 script:
-  - docker build -t tylern4/docker-root:rootv5 rootv5/.
-  - docker images -a
+    - docker build -t tylern4/dev-env dev-env/.
+    - docker images -a
