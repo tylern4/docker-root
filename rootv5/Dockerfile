@@ -1,4 +1,5 @@
 FROM centos:6.6
+LABEL maintainer "tylern@jlab.org"
 ENV TERM xterm
 
 ENV ROOTSYS /usr/local/root
