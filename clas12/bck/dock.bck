@@ -1,0 +1,141 @@
+## CLHEP
+RUN wget $BASE_URL/clhep/clhep-$CLHEP_VERSION.tgz \
+    && tar -zxpvf clhep-$CLHEP_VERSION.tgz \
+    && rm -rf clhep-$CLHEP_VERSION.tgz \
+    && cd $CLHEP_VERSION \
+    && rm -rf build && mkdir build && cd build \
+    && cmake3 -DCMAKE_INSTALL_PREFIX=$CLHEP_BASE_DIR ../CLHEP \
+    && make -j$(nproc) \
+    && make install
+
+## ROOT
+RUN wget https://github.com/root-project/root/archive/v6-08-04.tar.gz \
+    && tar -zxpvf v6-08-04.tar.gz \
+    && rm -rf v6-08-04.tar.gz \
+    && cd root-6-08-04 \
+    && mkdir compile && cd compile \
+    && cmake -DCMAKE_INSTALL_PREFIX=$ROOTSYS \
+    -Droofit=ON -Dminuit2=ON -Dpython=ON \
+    .. \
+    && make -j$(nproc) && make install
+
+## XERCESC
+RUN wget $BASE_URL/xercesc/xerces-c-$XERCESC_VERSION.tar.gz \
+    && tar -zxpvf xerces-c-$XERCESC_VERSION.tar.gz \
+    && rm -rf xerces-c-$XERCESC_VERSION.tar.gz \
+    && cd xerces-c-$XERCESC_VERSION \
+    && ./configure -prefix=$XERCESCROOT \
+    && make -j$(nproc) \
+    && make install
+
+## geant4
+RUN mkdir -p $G4INSTALL \
+    cd $G4INSTALL \
+    && wget $BASE_URL/geant4/geant$GEANT4_VERSION.tar.gz \
+    && tar -zxpvf geant$GEANT4_VERSION.tar.gz \
+    && cd geant$GEANT4_VERSION \
+    && rm -rf build && mkdir build && cd build \
+    && cmake3 -DCMAKE_INSTALL_PREFIX=$G4INSTALL \
+                  -DGEANT4_INSTALL_DATA=ON \
+  								-DGEANT4_USE_GDML=ON \
+  								-DXERCESC_ROOT_DIR=$XERCESCROOT \
+  								-DGEANT4_USE_QT=ON \
+  								-DQT_QMAKE_EXECUTABLE=$QTDIR/bin/qmake \
+  								-DCMAKE_INSTALL_DATAROOTDIR=$G4INSTALL/data \
+  								-DCLHEP_ROOT_DIR=$CLHEP_BASE_DIR \
+  								-DGEANT4_INSTALL_DATA=$DATA \
+  								-DGEANT4_BUILD_EXAMPLES=OFF \
+                  -DGEANT4_USE_OPENGL_X11=ON \
+  								-DCMAKE_CXX_FLAGS=-I$QTDIR/include \
+                  -I$QTDIR/include/QtOpenGL \
+                  -I$QTDIR/include/QtWidgets \
+                  -I$QTDIR/include/QtGui \
+                  -I$QTDIR/include/QtCore \
+                  -I$QTDIR/include/QtPrintSupport \
+                  "-W -Wall -pedantic -Wno-non-virtual-dtor -Wno-long-long -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -pipe" \
+                  ..
+
+## scons
+RUN rm -rf $JLAB_ROOT/$JLAB_VERSION/scons_bm/$SCONS_BM_VERSION \
+    && mkdir -p $JLAB_ROOT/$JLAB_VERSION/scons_bm/ \
+    && cd $JLAB_ROOT/$JLAB_VERSION/scons_bm/ \
+    && wget $BASE_URL/scons_bm/scons_bm-$SCONS_BM_VERSION.tar.gz \
+    && tar -zxpvf scons_bm-$SCONS_BM_VERSION.tar.gz \
+    && rm -rf scons_bm-$SCONS_BM_VERSION.tar.gz
+
+## EVIO
+RUN mkdir -p $JLAB_SOFTWARE/evio && cd $JLAB_SOFTWARE/evio \
+    && wget $BASE_URL/evio/evio-$EVIO_VERSION.tar.gz \
+    && tar -zxpvf evio-$EVIO_VERSION.tar.gz \
+    && rm -rf evio-$EVIO_VERSION.tar.gz \
+    && cd $EVIO_VERSION \
+    && scons -j$(nproc)
+
+## mysql
+RUN mkdir -p $JLAB_SOFTWARE/mysql \
+    && ln -sfn /usr/lib64/mysql $JLAB_SOFTWARE/mysql/lib
+
+## CCDB
+#RUN mkdir -p $JLAB_SOFTWARE/ccdb \
+#    && cd $JLAB_SOFTWARE/ccdb \
+#    && wget $BASE_URL/ccdb/ccdb-$CCDB_VERSION.tar.gz \
+#    && tar -zxpvf ccdb-$CCDB_VERSION.tar.gz \
+#    && rm -rf ccdb-$CCDB_VERSION.tar.gz \
+#    && cd $JLAB_SOFTWARE/ccdb/ccdb-$CCDB_VERSION \
+#    && scons -j$(nproc)
+RUN yum install -y csh
+RUN mkdir -p $JLAB_ROOT/devel/install
+COPY go_ccdb $JLAB_ROOT/devel/install
+COPY get_coptions $JLAB_ROOT/devel/install
+RUN cd $JLAB_ROOT/devel/install \
+    && chmod +x * \
+    && csh go_ccdb \
+    && echo "WTF?"
+
+## mlibrary
+ENV GIT_SSL_NO_VERIFY false
+RUN mkdir -p $JLAB_SOFTWARE/mlibrary \
+    && cd $JLAB_SOFTWARE/mlibrary \
+    && wget $BASE_URL/mlibrary/mlibrary-$MLIBRARY_VERSION.tar.gz \
+    && tar -zxpvf mlibrary-$MLIBRARY_VERSION.tar.gz \
+    && rm -rf mlibrary-$MLIBRARY_VERSION.tar.gz \
+    && cd $JLAB_SOFTWARE/mlibrary/$MLIBRARY_VERSION \
+    && scons -j$(nproc) OPT=1 \
+    && mkdir cadmeshBuild \
+    && cd cadmeshBuild \
+    && cmake3 ../cadmesh -DCMAKE_INSTALL_PREFIX:PATH=$MLIBRARY -DCMAKE_PREFIX_PATH=$JLAB_ROOT/$JLAB_VERSION/$OSRELEASE/geant4/$GEANT4_VERSION \
+    && make -j$(nproc) \
+    && make install
+
+## gemc
+#RUN rm -rf $JLAB_SOFTWARE/gemc/$GEMC_VERSION \
+#    && mkdir -p $JLAB_SOFTWARE/gemc \
+#    && cd $JLAB_SOFTWARE/gemc \
+#    && wget $BASE_URL/gemc/gemc-$GEMC_VERSION.tar.gz \
+#    && tar -zxpvf gemc-$GEMC_VERSION.tar.gz \
+#    && rm -rf gemc-$GEMC_VERSION.tar.gz \
+#    && cd $GEMC_VERSION \
+#    && scons -j$(nproc) LIBRARY=shared OPT=1
+
+## banks
+#RUN mkdir -p $JLAB_SOFTWARE/banks \
+#    && cd $JLAB_SOFTWARE/banks \
+#    && wget $BASE_URL/banks/banks-$BANKS_VERSION.tar.gz \
+#    && tar -zxpvf banks-$BANKS_VERSION.tar.gz \
+#    && rm -rf banks-$BANKS_VERSION.tar.gz \
+#    && cd $BANKS_VERSION \
+#    && scons -j$(nproc)
+
+## jana
+#ENV BMS_OSNAME $OSRELEASE
+#RUN mkdir -p $JANA_HOME \
+#    && cd $JLAB_SOFTWARE/jana \
+#    && wget $BASE_URL/jana/jana_$JANA_VERSION.tgz \
+#    && tar -zxpvf jana_$JANA_VERSION.tgz \
+#    && rm -rf jana_$JANA_VERSION.tgz \
+#    && cd jana_$JANA_VERSION \
+#    && scons -j$(nproc) install \
+#    && mv $BMS_OSNAME/* $JANA_HOME \
+#    && rm -rf $JANA_HOME/src \
+#    && rm -rf $JLAB_SOFTWARE/jana/$filename \
+#    && rm -rf $JLAB_SOFTWARE/jana/jana_$JANA_VERSION
