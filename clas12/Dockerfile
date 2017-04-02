@@ -4,7 +4,7 @@ ENV TERM xterm
 RUN yum -y update && yum install -y java-1.8.0-openjdk \
     gcc-c++ gcc libX11-devel mesa-libGLU-devel expat-devel zlib-devel \
     scons mysql-devel wget tcsh git cmake3 make bc vim emacs nano file \
-    qt-devel perl binutils bash parallel \
+    perl binutils bash parallel \
     libX11-devel libXpm-devel libXft-devel libXext-devel xbae-devel libXaw-devel \
     subversion scons patch expat-devel mysql-devel bzip2-devel \
     blas-devel blas-static lapack-devel lapack-static bzip2 tcsh \
@@ -14,7 +14,7 @@ RUN yum -y update && yum install -y java-1.8.0-openjdk \
     avahi-compat-libdns_sd-devel libldap-dev python-devel \
     libxml2-devel gsl-static xz tar file scons openmotif-devel \
     wget libXmu-devel libXp-devel libXt-devel libjpeg-devel libpng-devel \
-    tcl tcl-devel tk tk-devel imake libtool qt5-qtbase
+    tcl tcl-devel tk tk-devel imake libtool mv
 
 RUN ln -s /usr/bin/cmake3 /usr/bin/cmake
 
@@ -64,7 +64,15 @@ ENV SCONSFLAGS --site-dir $JLAB_ROOT/$JLAB_VERSION/scons_bm/$JLAB_VERSION
 ENV XERCESC_VERSION 3.1.4
 ENV XERCESCROOT $JLAB_ROOT/$JLAB_VERSION/$OSRELEASE/xercesc/$XERCESC_VERSION
 
-WORKDIR /tmp/
+WORKDIR $JLAB_ROOT
+
+## Fields ---Long download---
+RUN mkdir -p $JLAB_ROOT/noarch/data \
+    && cd $JLAB_ROOT/noarch/data \
+    && rm -rf srr* clas12* \
+    && wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat \
+    && wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
+
 ## QT
 RUN wget http://download.qt.io/official_releases/qt/5.8/5.8.0/single/qt-everywhere-opensource-src-5.8.0.tar.gz \
     && tar -zxpvf qt-everywhere-opensource-src-5.8.0.tar.gz \
@@ -86,103 +94,6 @@ RUN wget http://download.qt.io/official_releases/qt/5.8/5.8.0/single/qt-everywhe
     && make -j$(nproc) \
     && make install
 
-## CLHEP
-RUN wget $BASE_URL/clhep/clhep-$CLHEP_VERSION.tgz \
-    && tar -zxpvf clhep-$CLHEP_VERSION.tgz \
-    && cd $CLHEP_VERSION \
-    && rm -rf build && mkdir build && cd build \
-    && cmake3 -DCMAKE_INSTALL_PREFIX=$CLHEP_BASE_DIR ../CLHEP \
-    && make -j$(nproc) \
-    && make install \
-    && rm -rf /tmp/*
-
-## XERCESC
-RUN wget $BASE_URL/xercesc/xerces-c-$XERCESC_VERSION.tar.gz \
-    && tar -zxpvf xerces-c-$XERCESC_VERSION.tar.gz \
-    && cd xerces-c-$XERCESC_VERSION \
-    && ./configure -prefix=$XERCESCROOT \
-    && make -j$(nproc) \
-    && make install \
-    && rm -rf /tmp/*
-
-## geant4
-RUN wget $BASE_URL/geant4/geant$GEANT4_VERSION.tar.gz \
-    && tar -zxpvf geant$GEANT4_VERSION.tar.gz \
-    && cd geant$GEANT4_VERSION \
-    && rm -rf build && mkdir build && cd build \
-    && cmake3 -DCMAKE_INSTALL_PREFIX=$G4INSTALL \
-                  -DGEANT4_INSTALL_DATA=ON \
-  								-DGEANT4_USE_GDML=ON \
-  								-DXERCESC_ROOT_DIR=$XERCESCROOT \
-  								-DGEANT4_USE_QT=ON \
-  								-DQT_QMAKE_EXECUTABLE=$QTDIR/bin/qmake \
-  								-DCMAKE_INSTALL_DATAROOTDIR=$G4INSTALL/data \
-  								-DCLHEP_ROOT_DIR=$CLHEP_BASE_DIR \
-  								-DGEANT4_INSTALL_DATA=$DATA \
-  								-DGEANT4_BUILD_EXAMPLES=OFF \
-                  -DGEANT4_USE_OPENGL_X11=ON \
-  								-DCMAKE_CXX_FLAGS=-I$QTDIR/include \
-                  -I$QTDIR/include/QtOpenGL \
-                  -I$QTDIR/include/QtWidgets \
-                  -I$QTDIR/include/QtGui \
-                  -I$QTDIR/include/QtCore \
-                  -I$QTDIR/include/QtPrintSupport \
-                  "-W -Wall -pedantic -Wno-non-virtual-dtor -Wno-long-long -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -pipe" \
-                  ..
-
-## scons
-RUN rm -rf $JLAB_ROOT/$JLAB_VERSION/scons_bm/$SCONS_BM_VERSION \
-    && mkdir -p $JLAB_ROOT/$JLAB_VERSION/scons_bm/ \
-    && cd $JLAB_ROOT/$JLAB_VERSION/scons_bm/ \
-    && wget $BASE_URL/scons_bm/scons_bm-$SCONS_BM_VERSION.tar.gz \
-    && tar -zxpvf scons_bm-$SCONS_BM_VERSION.tar.gz \
-    && rm -rf scons_bm-$SCONS_BM_VERSION.tar.gz
-
-## EVIO
-RUN mkdir -p $JLAB_SOFTWARE/evio && cd $JLAB_SOFTWARE/evio \
-    && wget $BASE_URL/evio/evio-$EVIO_VERSION.tar.gz \
-    && tar -zxpvf evio-$EVIO_VERSION.tar.gz \
-    && rm -rf evio-$EVIO_VERSION.tar.gz \
-    && cd $EVIO_VERSION \
-    && scons -j$(nproc)
-
-## mysql
-RUN mkdir -p $JLAB_SOFTWARE/mysql \
-    && ln -sfn /usr/lib64/mysql $JLAB_SOFTWARE/mysql/lib
-
-## CCDB
-RUN mkdir -p $JLAB_SOFTWARE/ccdb \
-    && cd $JLAB_SOFTWARE/ccdb \
-    && wget $BASE_URL/ccdb/ccdb-$CCDB_VERSION.tar.gz \
-    && tar -zxpvf ccdb-$CCDB_VERSION.tar.gz \
-    && rm -rf ccdb-$CCDB_VERSION.tar.gz \
-    && cd ccdb-$CCDB_VERSION \
-    && scons -j$(nproc)
-
-## mlibrary
-ENV GIT_SSL_NO_VERIFY false
-RUN mkdir -p $JLAB_SOFTWARE/mlibrary \
-    && wget $BASE_URL/mlibrary/mlibrary-$MLIBRARY_VERSION.tar.gz \
-    && tar -zxpvf mlibrary-$MLIBRARY_VERSION.tar.gz \
-    && rm -rf mlibrary-$MLIBRARY_VERSION.tar.gz \
-    && cd $MLIBRARY_VERSION \
-    && scons -j$(nproc) OPT=1 \
-    && mkdir cadmeshBuild \
-    && cd cadmeshBuild \
-    && cmake3 ../cadmesh -DCMAKE_INSTALL_PREFIX:PATH=$MLIBRARY \
-    && make -j$(nproc) \
-    && make install
-
-## gemc
-RUN rm -rf $JLAB_SOFTWARE/gemc/$GEMC_VERSION \
-    && mkdir -p $JLAB_SOFTWARE/gemc \
-    && cd $JLAB_SOFTWARE/gemc \
-    && wget $BASE_URL/gemc/gemc-$GEMC_VERSION.tar.gz \
-    && tar -zxpvf gemc-$GEMC_VERSION.tar.gz \
-    && rm -rf gemc-$GEMC_VERSION.tar.gz \
-    && cd gemc-$GEMC_VERSION \
-    && scons -j$(nproc) LIBRARY=shared OPT=1
-
 ## ROOT
 RUN wget https://github.com/root-project/root/archive/v6-08-04.tar.gz \
     && tar -zxpvf v6-08-04.tar.gz \
@@ -194,37 +105,25 @@ RUN wget https://github.com/root-project/root/archive/v6-08-04.tar.gz \
     .. \
     && make -j$(nproc) && make install
 
-## banks
-RUN mkdir -p $JLAB_SOFTWARE/banks \
-    && cd $JLAB_SOFTWARE/banks \
-    && wget $BASE_URL/banks/banks-$BANKS_VERSION.tar.gz \
-    && tar -zxpvf banks-$BANKS_VERSION.tar.gz \
-    && rm -rf banks-$BANKS_VERSION.tar.gz \
-    && cd $BANKS_VERSION \
-    && scons -j$(nproc)
+## Do rest from install scripts
+RUN mkdir -p $JLAB_ROOT/devel \
+    && cd $JLAB_ROOT \
+    && wget http://www.jlab.org/12gev_phys/packages/sources/ceInstall/ceInstall_devel.tar.gz \
+    && tar -zxpvf ceInstall_devel.tar.gz
 
-## jana
-ENV BMS_OSNAME $OSRELEASE
-RUN mkdir -p $JANA_HOME \
-    && cd $JLAB_SOFTWARE/jana \
-    && wget $BASE_URL/jana/jana_$JANA_VERSION.tgz \
-    && tar -zxpvf jana_$JANA_VERSION.tgz \
-    && rm -rf jana_$JANA_VERSION.tgz \
-    && cd jana_$JANA_VERSION \
-    && scons -j$(nproc) install \
-    && mv $BMS_OSNAME/* $JANA_HOME \
-    && rm -rf $JANA_HOME/src \
-    && rm -rf $JLAB_SOFTWARE/jana/$filename \
-    && rm -rf $JLAB_SOFTWARE/jana/jana_$JANA_VERSION
-
-
-## Fields ---Long download---
-RUN mkdir -p $JLAB_ROOT/noarch/data \
-    && cd $JLAB_ROOT/noarch/data \
-    && rm -rf srr* clas12* \
-    && wget http://clasweb.jlab.org/12gev/field_maps/clas12SolenoidFieldMap.dat \
-    && wget http://clasweb.jlab.org/12gev/field_maps/clas12TorusOriginalMap.dat
-
+WORKDIR $JLAB_ROOT/devel/install
+RUN ./go_clhep
+RUN ./go_xercesc
+#RUN ./go_geant4
+#RUN ./go_sconsscript
+#RUN ./go_evio
+#RUN ./go_mysql
+#RUN ./go_ccdb
+#RUN ./go_mlibrary
+#RUN ./go_gemc
+#RUN ./go_fields
+#RUN ./go_banks
+#RUN ./go_jana
 
 
 ENTRYPOINT ["/bin/bash"]
