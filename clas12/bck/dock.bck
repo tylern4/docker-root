@@ -139,3 +139,192 @@ RUN mkdir -p $JLAB_SOFTWARE/mlibrary \
 #    && rm -rf $JANA_HOME/src \
 #    && rm -rf $JLAB_SOFTWARE/jana/$filename \
 #    && rm -rf $JLAB_SOFTWARE/jana/jana_$JANA_VERSION
+
+########################
+
+## CLHEP
+#RUN apt-get install -y libclhep-dev
+#ENV CLHEP_VERSION 2.3.4.3
+#ENV CLHEP_BASE_DIR $JLAB_SOFTWARE/clhep/$CLHEP_VERSION
+
+#RUN wget $BASE_URL/clhep/clhep-$CLHEP_VERSION.tgz \
+#    && tar -zxpvf clhep-$CLHEP_VERSION.tgz \
+#    && rm -rf clhep-$CLHEP_VERSION.tgz \
+#    && cd $CLHEP_VERSION \
+#    && rm -rf build && mkdir build && cd build \
+#    && cmake -DCMAKE_INSTALL_PREFIX=$CLHEP_BASE_DIR ../CLHEP \
+#    && make -j$(nproc) \
+#    && make install
+
+## XERCESC
+#RUN apt-get install -y libxerces-c3-dev
+#ENV XERCESC_VERSION 3.1.4
+#ENV XERCESCROOT $JLAB_SOFTWARE/xercesc/$XERCESC_VERSION
+
+#RUN wget $BASE_URL/xercesc/xerces-c-$XERCESC_VERSION.tar.gz \
+#    && tar -zxpvf xerces-c-$XERCESC_VERSION.tar.gz \
+#    && rm -rf xerces-c-$XERCESC_VERSION.tar.gz \
+#    && cd xerces-c-$XERCESC_VERSION \
+#    && ./configure -prefix=$XERCESCROOT \
+#    && make -j$(nproc) \
+#    && make install
+
+
+
+#ENV CCDB_VERSION 1.06.02
+#ENV CCDB_HOME /usr/local/jlab_software/x86_64/devel/ccdb/ccdb-1.06.02
+#ENV CCDB_USER root
+#RUN mkdir -p $JLAB_SOFTWARE/ccdb \
+#    && cd $JLAB_SOFTWARE/ccdb \
+#    && wget $BASE_URL/ccdb/ccdb-$CCDB_VERSION.tar.gz \
+#    && tar -zxpvf ccdb-$CCDB_VERSION.tar.gz \
+#    && rm -rf ccdb-$CCDB_VERSION.tar.gz \
+#    && cd $JLAB_SOFTWARE/ccdb/ccdb-$CCDB_VERSION \
+#    && scons -j$(nproc) \
+#    && mkdir -p $CCDB_HOME \
+#    && cp -r $JLAB_SOFTWARE/ccdb/ccdb-$CCDB_VERSION $CCDB_HOME
+
+
+#    -no-zlib \
+#    -no-xkbcommon \
+#    -no-freetype \
+#    -no-harfbuzz \
+#    -no-xcb \
+#		-no-feature-accessibility \
+#		-no-feature-texthtmlparser \
+#		-no-feature-textodfwriter \
+#		-no-feature-cssparser \
+#		-no-feature-regularexpression \
+#		-no-feature-concurrent \
+#		-no-feature-draganddrop \
+#		-no-feature-sessionmanager \
+#		-no-feature-shortcut \
+#		-no-feature-action \
+#		-no-feature-cursor \
+#		-no-feature-clipboard \
+#		-no-feature-wheelevent \
+#		-no-feature-tabletevent \
+#		-no-feature-effects \
+#		-no-feature-sharedmemory \
+#		-no-feature-systemsemaphore \
+#		-no-feature-xmlstream \
+#		-no-feature-xmlstreamreader \
+#		-no-feature-xmlstreamwriter \
+#		-no-feature-im \
+#		-no-feature-textdate \
+#		-no-feature-datestring \
+#		-no-feature-process \
+#		-no-feature-temporaryfile \
+#		-no-feature-library \
+#		-no-feature-settings \
+#		-no-feature-dom \
+#		-no-feature-filesystemmodel \
+#		-no-feature-filesystemwatcher \
+#		-no-feature-filesystemiterator \
+#		-no-feature-treewidget \
+#		-no-feature-listwidget \
+#		-no-feature-tablewidget \
+#		-no-feature-datetimeedit \
+#		-no-feature-stackedwidget \
+#		-no-feature-textbrowser \
+#		-no-feature-splashscreen \
+#		-no-feature-splitter \
+#		-no-feature-lcdnumber \
+#		-no-feature-menu \
+#		-no-feature-lineedit \
+#		-no-feature-spinbox \
+#		-no-feature-tabbar \
+#		-no-feature-tabwidget \
+#		-no-feature-combobox \
+#		-no-feature-fontcombobox \
+#		-no-feature-toolbutton \
+#		-no-feature-toolbar \
+#		-no-feature-toolbox \
+#		-no-feature-groupbox \
+#		-no-feature-buttongroup \
+#		-no-feature-mainwindow \
+#		-no-feature-dockwidget \
+#		-no-feature-mdiarea \
+#		-no-feature-resizehandler \
+#		-no-feature-statusbar \
+#		-no-feature-menubar \
+#		-no-feature-contextmenu \
+#		-no-feature-progressbar \
+#		-no-feature-slider \
+#		-no-feature-scrollbar \
+#		-no-feature-dial \
+#		-no-feature-scrollarea \
+#		-no-feature-graphicsview \
+#		-no-feature-graphicseffect \
+#		-no-feature-textedit \
+#		-no-feature-syntaxhighlighter \
+#		-no-feature-rubberband \
+#		-no-feature-tooltip \
+#		-no-feature-statustip \
+#		-no-feature-whatsthis \
+#		-no-feature-validator \
+#		-no-feature-sizegrip \
+#		-no-feature-calendarwidget \
+#		-no-feature-printpreviewwidget \
+#		-no-feature-keysequenceedit \
+#		-no-feature-messagebox \
+#		-no-feature-colordialog \
+#		-no-feature-filedialog \
+#		-no-feature-fontdialog \
+#		-no-feature-printdialog \
+#		-no-feature-printpreviewdialog \
+#		-no-feature-progressdialog \
+#		-no-feature-inputdialog \
+#		-no-feature-errormessage \
+#		-no-feature-wizard \
+#		-no-feature-itemviews \
+#		-no-feature-dirmodel \
+#		-no-feature-standarditemmodel \
+#		-no-feature-proxymodel \
+#		-no-feature-sortfilterproxymodel \
+#		-no-feature-identityproxymodel \
+#		-no-feature-stringlistmodel \
+#		-no-feature-listview \
+#		-no-feature-tableview \
+#		-no-feature-treeview \
+#		-no-feature-datawidgetmapper \
+#		-no-feature-columnview \
+#		-no-feature-imageformatplugin \
+#		-no-feature-movie \
+#		-no-feature-image_heuristic_mask \
+#		-no-feature-image_text \
+#		-no-feature-picture \
+#		-no-feature-colornames \
+#		-no-feature-pdf \
+#		-no-feature-printer \
+#		-no-feature-cups \
+#		-no-feature-paint_debug \
+#		-no-feature-freetype \
+#		-no-feature-translation \
+#		-no-feature-textcodec \
+#		-no-feature-codecs \
+#		-no-feature-big_codecs \
+#		-no-feature-iconv \
+#		-no-feature-ftp \
+#		-no-feature-http \
+#		-no-feature-udpsocket \
+#		-no-feature-networkproxy \
+#		-no-feature-socks5 \
+#		-no-feature-networkinterface \
+#		-no-feature-networkdiskcache \
+#		-no-feature-bearermanagement \
+#		-no-feature-localserver \
+#		-no-feature-completer \
+#		-no-feature-fscompleter \
+#		-no-feature-desktopservices \
+#		-no-feature-mimetype \
+#		-no-feature-systemtrayicon \
+#		-no-feature-undocommand \
+#		-no-feature-undostack \
+#		-no-feature-undogroup \
+#		-no-feature-undoview \
+#		-no-feature-accessibility \
+#		-no-feature-animation \
+#		-no-feature-statemachine \
+#		-no-feature-gestures \
+#		-no-feature-dbus \

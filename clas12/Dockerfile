@@ -16,10 +16,12 @@ RUN apt-get -y update && apt-get -y upgrade \
     libmysqlclient-dev libfftw3-dev libcfitsio-dev \
     graphviz-dev libavahi-compat-libdnssd-dev \
     libldap2-dev python-dev libxml2-dev libkrb5-dev \
-    libgsl0-dev libqt4-dev python-pip wget curl python-tk \
+    libgsl0-dev python-pip wget curl python-tk \
     scons libxmu-dev libx11-dev libclhep-dev libxerces-c3-dev \
-    qt4-dev-tools freeglut3-dev libmotif-dev tk-dev libxi-dev \
+    freeglut3-dev libmotif-dev tk-dev libxi-dev \
     && apt-get clean
+
+#libqt4-dev qt4-dev-tools
 
 RUN cd /tmp/ \
     && git clone -b v6-06-00-patches https://github.com/root-project/root.git \
@@ -60,7 +62,7 @@ RUN wget http://download.qt.io/official_releases/qt/5.8/$QT_VERSION/single/qt-ev
 RUN cd $QTDIR \
     && ./configure -prefix $QTDIR \
     -skip qtconnectivity \
-    -static \
+    #-static \
     -release \
     -opensource \
     -confirm-license \
@@ -72,32 +74,7 @@ RUN cd $QTDIR \
     && make -j$(nproc) \
     && make install
 
-## CLHEP
-#RUN apt-get install -y libclhep-dev
-#ENV CLHEP_VERSION 2.3.4.3
-#ENV CLHEP_BASE_DIR $JLAB_SOFTWARE/clhep/$CLHEP_VERSION
 
-#RUN wget $BASE_URL/clhep/clhep-$CLHEP_VERSION.tgz \
-#    && tar -zxpvf clhep-$CLHEP_VERSION.tgz \
-#    && rm -rf clhep-$CLHEP_VERSION.tgz \
-#    && cd $CLHEP_VERSION \
-#    && rm -rf build && mkdir build && cd build \
-#    && cmake -DCMAKE_INSTALL_PREFIX=$CLHEP_BASE_DIR ../CLHEP \
-#    && make -j$(nproc) \
-#    && make install
-
-## XERCESC
-#RUN apt-get install -y libxerces-c3-dev
-#ENV XERCESC_VERSION 3.1.4
-#ENV XERCESCROOT $JLAB_SOFTWARE/xercesc/$XERCESC_VERSION
-
-#RUN wget $BASE_URL/xercesc/xerces-c-$XERCESC_VERSION.tar.gz \
-#    && tar -zxpvf xerces-c-$XERCESC_VERSION.tar.gz \
-#    && rm -rf xerces-c-$XERCESC_VERSION.tar.gz \
-#    && cd xerces-c-$XERCESC_VERSION \
-#    && ./configure -prefix=$XERCESCROOT \
-#    && make -j$(nproc) \
-#    && make install
 
 ## geant4
 ENV GEANT4_VERSION 10.03.p01
@@ -121,6 +98,12 @@ RUN wget http://geant4.web.cern.ch/geant4/support/source/geant4.$GEANT4_VERSION.
         -DGEANT4_USE_XM=ON \
         -DGEANT4_USE_QT=ON \
         -DCMAKE_CXX_FLAGS= \
+        -I$QTDIR/include \
+    		-I$QTDIR/include/QtOpenGL \
+    		-I$QTDIR/include/QtWidgets \
+    		-I$QTDIR/include/QtGui \
+    		-I$QTDIR/include/QtCore \
+    		-I$QTDIR/include/QtPrintSupport \
         "-W -Wall -pedantic -Wno-non-virtual-dtor -Wno-long-long -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -pipe" \
         .. \
     && make -j$(nproc) && make install
@@ -129,6 +112,9 @@ RUN wget http://geant4.web.cern.ch/geant4/support/source/geant4.$GEANT4_VERSION.
 ENV SCONS_BM_VERSION $JLAB_VERSION
 ENV SCONS_BM $JLAB_ROOT/$JLAB_VERSION/scons_bm/$JLAB_VERSION
 ENV SCONSFLAGS --site-dir $JLAB_ROOT/$JLAB_VERSION/scons_bm/$JLAB_VERSION
+
+#ENV QTDIR /usr/include/qt4
+ENV PKG_CONFIG_PATH $QTDIR/lib/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 
 RUN rm -rf $JLAB_ROOT/$JLAB_VERSION/scons_bm/$SCONS_BM_VERSION \
     && mkdir -p $JLAB_ROOT/$JLAB_VERSION/scons_bm/ \
@@ -182,19 +168,6 @@ RUN cd $JLAB_SOFTWARE \
     && cd $CCDB_HOME \
     && scons -j$(nproc)
 
-#ENV CCDB_VERSION 1.06.02
-#ENV CCDB_HOME /usr/local/jlab_software/x86_64/devel/ccdb/ccdb-1.06.02
-#ENV CCDB_USER root
-#RUN mkdir -p $JLAB_SOFTWARE/ccdb \
-#    && cd $JLAB_SOFTWARE/ccdb \
-#    && wget $BASE_URL/ccdb/ccdb-$CCDB_VERSION.tar.gz \
-#    && tar -zxpvf ccdb-$CCDB_VERSION.tar.gz \
-#    && rm -rf ccdb-$CCDB_VERSION.tar.gz \
-#    && cd $JLAB_SOFTWARE/ccdb/ccdb-$CCDB_VERSION \
-#    && scons -j$(nproc) \
-#    && mkdir -p $CCDB_HOME \
-#    && cp -r $JLAB_SOFTWARE/ccdb/ccdb-$CCDB_VERSION $CCDB_HOME
-
 ## EVIO
 ENV EVIO_VERSION 5.1
 ENV EVIO $JLAB_SOFTWARE/evio/$EVIO_VERSION
@@ -215,23 +188,15 @@ RUN rm -rf $JLAB_SOFTWARE/gemc/$GEMC_VERSION \
     && mkdir -p $JLAB_SOFTWARE/gemc \
     && cd $JLAB_SOFTWARE/gemc \
     && git clone https://github.com/gemc/source.git $GEMC_VERSION
-    #&& wget $BASE_URL/gemc/gemc-$GEMC_VERSION.tar.gz \
-    #&& tar -zxpvf gemc-$GEMC_VERSION.tar.gz \
-    #&& rm -rf gemc-$GEMC_VERSION.tar.gz
 
-#ENV LD_LIBRARY_PATH $QTDIR/lib:$LD_LIBRARY_PATH
-#COPY PhysicsList.cc $JLAB_SOFTWARE/gemc/$GEMC_VERSION/physics/
+COPY PhysicsList.cc $JLAB_SOFTWARE/gemc/$GEMC_VERSION/physics/
+COPY clas12.gcard /root/
 ENV CLHEP_BASE_DIR /usr/include/CLHEP
 ENV XERCESCROOT /usr/include/xercesc
 ENV CCDB_HOME $JLAB_SOFTWARE/ccdb
 RUN cd $JLAB_SOFTWARE/gemc/$GEMC_VERSION \
-    #&& ln -s /usr/local/Qt/5.5/gcc_64/lib/libicui18n.so.54 /usr/lib/x86_64-linux-gnu/libicui18n.so.54 \
-    #&& ln -s /usr/local/Qt/5.5/gcc_64/lib/libicuuc.so.54 /usr/lib/x86_64-linux-gnu/libicuuc.so.54 \
-    #&& ln -s /usr/local/Qt/5.5/gcc_64/lib/libicudata.so.54 /usr/lib/x86_64-linux-gnu/libicudata.so.54 \
-    #&& cp -r /usr/local/jlab_software/devel/x86_64/ccdb/ccdb-1.06.02/include/* hitprocess/clas12/. \
-    #&& mkdir lib \
-    #&& ln -s /usr/local/jlab_software/devel/x86_64/ccdb/ccdb-1.06.02/lib/* lib \
-    && scons -j$(nproc) LIBRARY=shared OPT=1
+    && scons -j$(nproc) OPT=1
+
 
 ## banks
 #ENV BANKS_VERSION $JLAB_VERSION
@@ -261,168 +226,6 @@ RUN cd $JLAB_SOFTWARE/gemc/$GEMC_VERSION \
 #    && rm -rf $JANA_HOME/src \
 #    && rm -rf $JLAB_SOFTWARE/jana/$filename \
 #    && rm -rf $JLAB_SOFTWARE/jana/jana_$JANA_VERSION
-
-
-##
-
-#RUN ./go_clhep ##
-#RUN ./go_xercesc ##
-#RUN ./go_qt *?
-#RUN ./go_geant4 ##
-#RUN ./go_sconsscript ##
-#RUN ./go_evio ##
-#RUN ./go_mysql ##
-#RUN ./go_ccdb ##
-#RUN ./go_mlibrary
-#RUN ./go_gemc
-#RUN ./go_fields
-#RUN ./go_banks
-#RUN ./go_jana
-
-
-#    -no-zlib \
-#    -no-xkbcommon \
-#    -no-freetype \
-#    -no-harfbuzz \
-#    -no-xcb \
-#		-no-feature-accessibility \
-#		-no-feature-texthtmlparser \
-#		-no-feature-textodfwriter \
-#		-no-feature-cssparser \
-#		-no-feature-regularexpression \
-#		-no-feature-concurrent \
-#		-no-feature-draganddrop \
-#		-no-feature-sessionmanager \
-#		-no-feature-shortcut \
-#		-no-feature-action \
-#		-no-feature-cursor \
-#		-no-feature-clipboard \
-#		-no-feature-wheelevent \
-#		-no-feature-tabletevent \
-#		-no-feature-effects \
-#		-no-feature-sharedmemory \
-#		-no-feature-systemsemaphore \
-#		-no-feature-xmlstream \
-#		-no-feature-xmlstreamreader \
-#		-no-feature-xmlstreamwriter \
-#		-no-feature-im \
-#		-no-feature-textdate \
-#		-no-feature-datestring \
-#		-no-feature-process \
-#		-no-feature-temporaryfile \
-#		-no-feature-library \
-#		-no-feature-settings \
-#		-no-feature-dom \
-#		-no-feature-filesystemmodel \
-#		-no-feature-filesystemwatcher \
-#		-no-feature-filesystemiterator \
-#		-no-feature-treewidget \
-#		-no-feature-listwidget \
-#		-no-feature-tablewidget \
-#		-no-feature-datetimeedit \
-#		-no-feature-stackedwidget \
-#		-no-feature-textbrowser \
-#		-no-feature-splashscreen \
-#		-no-feature-splitter \
-#		-no-feature-lcdnumber \
-#		-no-feature-menu \
-#		-no-feature-lineedit \
-#		-no-feature-spinbox \
-#		-no-feature-tabbar \
-#		-no-feature-tabwidget \
-#		-no-feature-combobox \
-#		-no-feature-fontcombobox \
-#		-no-feature-toolbutton \
-#		-no-feature-toolbar \
-#		-no-feature-toolbox \
-#		-no-feature-groupbox \
-#		-no-feature-buttongroup \
-#		-no-feature-mainwindow \
-#		-no-feature-dockwidget \
-#		-no-feature-mdiarea \
-#		-no-feature-resizehandler \
-#		-no-feature-statusbar \
-#		-no-feature-menubar \
-#		-no-feature-contextmenu \
-#		-no-feature-progressbar \
-#		-no-feature-slider \
-#		-no-feature-scrollbar \
-#		-no-feature-dial \
-#		-no-feature-scrollarea \
-#		-no-feature-graphicsview \
-#		-no-feature-graphicseffect \
-#		-no-feature-textedit \
-#		-no-feature-syntaxhighlighter \
-#		-no-feature-rubberband \
-#		-no-feature-tooltip \
-#		-no-feature-statustip \
-#		-no-feature-whatsthis \
-#		-no-feature-validator \
-#		-no-feature-sizegrip \
-#		-no-feature-calendarwidget \
-#		-no-feature-printpreviewwidget \
-#		-no-feature-keysequenceedit \
-#		-no-feature-messagebox \
-#		-no-feature-colordialog \
-#		-no-feature-filedialog \
-#		-no-feature-fontdialog \
-#		-no-feature-printdialog \
-#		-no-feature-printpreviewdialog \
-#		-no-feature-progressdialog \
-#		-no-feature-inputdialog \
-#		-no-feature-errormessage \
-#		-no-feature-wizard \
-#		-no-feature-itemviews \
-#		-no-feature-dirmodel \
-#		-no-feature-standarditemmodel \
-#		-no-feature-proxymodel \
-#		-no-feature-sortfilterproxymodel \
-#		-no-feature-identityproxymodel \
-#		-no-feature-stringlistmodel \
-#		-no-feature-listview \
-#		-no-feature-tableview \
-#		-no-feature-treeview \
-#		-no-feature-datawidgetmapper \
-#		-no-feature-columnview \
-#		-no-feature-imageformatplugin \
-#		-no-feature-movie \
-#		-no-feature-image_heuristic_mask \
-#		-no-feature-image_text \
-#		-no-feature-picture \
-#		-no-feature-colornames \
-#		-no-feature-pdf \
-#		-no-feature-printer \
-#		-no-feature-cups \
-#		-no-feature-paint_debug \
-#		-no-feature-freetype \
-#		-no-feature-translation \
-#		-no-feature-textcodec \
-#		-no-feature-codecs \
-#		-no-feature-big_codecs \
-#		-no-feature-iconv \
-#		-no-feature-ftp \
-#		-no-feature-http \
-#		-no-feature-udpsocket \
-#		-no-feature-networkproxy \
-#		-no-feature-socks5 \
-#		-no-feature-networkinterface \
-#		-no-feature-networkdiskcache \
-#		-no-feature-bearermanagement \
-#		-no-feature-localserver \
-#		-no-feature-completer \
-#		-no-feature-fscompleter \
-#		-no-feature-desktopservices \
-#		-no-feature-mimetype \
-#		-no-feature-systemtrayicon \
-#		-no-feature-undocommand \
-#		-no-feature-undostack \
-#		-no-feature-undogroup \
-#		-no-feature-undoview \
-#		-no-feature-accessibility \
-#		-no-feature-animation \
-#		-no-feature-statemachine \
-#		-no-feature-gestures \
-#		-no-feature-dbus \
 
 
 ENTRYPOINT ["/bin/bash"]
