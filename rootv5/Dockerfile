@@ -16,7 +16,7 @@ RUN yum -y install epel-release && yum -y update \
     blas-devel blas-static lapack-devel lapack-static bzip2 tcsh \
     sqlite-devel gcc-gfortran openssl-devel pcre-devel \
     mesa-libGL-devel mesa-libGLU-devel glew-devel ftgl-devel \
-    fftw-devel cfitsio-devel graphviz-devel \
+    fftw-devel cfitsio-devel graphviz-devel which mv \
     avahi-compat-libdns_sd-devel libldap-dev python-devel \
     libxml2-devel gsl-static xz tar file scons openmotif-devel \
     wget libXmu-devel libXp-devel libXt-devel libjpeg-devel libpng-devel \
@@ -34,5 +34,4 @@ RUN cd /tmp/ \
 	&& make -j$(nproc) && make && make install \
 	&& source bin/thisroot.sh
 
-EXPOSE 22
 ENTRYPOINT source /usr/local/root/bin/thisroot.sh && root -b
