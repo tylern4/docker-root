@@ -25,13 +25,23 @@ RUN yum -y install epel-release && yum -y update \
     && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
 
 RUN cd /tmp/ \
-	&& wget https://github.com/root-project/root/archive/v5-34-36.tar.gz \
+    && wget https://github.com/root-project/root/archive/v5-34-36.tar.gz \
     && tar -xvf v5-34-36.tar.gz \
     && rm -f v5-34-36.tar.gz \
-	&& cd root-5-34-36/ \
-	&& ./configure --all --prefix=$ROOTSYS \
-	&& make -j$(nproc) && make && make install \
-	&& source bin/thisroot.sh
+  	&& cd root-5-34-36/ \
+  	&& ./configure --all --prefix=$ROOTSYS \
+  	&& make -j$(nproc) && make && make install \
+  	&& source bin/thisroot.sh
+
+
+RUN cd /tmp/ \
+    && wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 \
+    && tar -xvf parallel-latest.tar.bz2 \
+    && rm -rf parallel-latest.tar.bz2 \
+    && cd parallel-* \
+    && ./configure \
+    && make && make install \
+    && cp src/parallel /usr/local/bin/
 
 COPY root-entrypoint.sh /usr/local/sbin
 
