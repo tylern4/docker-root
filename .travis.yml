@@ -5,5 +5,5 @@ services:
     - docker
 
 script:
-    - docker build -t tylern4/docker-root dev-clas12/.
+    - docker build -t tylern4/docker-root dev-coatjava/.
     - docker images -a
