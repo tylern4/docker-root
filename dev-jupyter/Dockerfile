@@ -284,9 +284,10 @@ COPY jupyter /home/$NB_USER/.jupyter
 COPY ipython.sh /home/$NB_USER/.jupyter/
 RUN chown -R $NB_USER:users /home/$NB_USER/.jupyter
 
+RUN conda install --yes ipyparallel \
+    && ipcluster nbextension enable
+
 USER $NB_USER
 WORKDIR /home/$NB_USER/
-
-RUN conda install --yes ipyparallel
 
 ENTRYPOINT [".jupyter/ipython.sh"]
