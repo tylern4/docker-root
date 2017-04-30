@@ -1,4 +1,5 @@
-FROM centos:6.6
+#tylern4/rootv6:centos7_py3
+FROM centos:7
 LABEL maintainer "tylern@jlab.org"
 ENV TERM xterm
 
@@ -21,18 +22,10 @@ RUN yum -y install epel-release && yum -y update \
     libxml2-devel gsl-static xz tar file scons openmotif-devel \
     wget libXmu-devel libXp-devel libXt-devel libjpeg-devel libpng-devel \
     tcl tcl-devel tk tk-devel imake libtool \
-    && yum clean all \
-    && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
+    python-pip python-wheel python3-pip python3 python3-wheel \
+    && yum clean all
 
-RUN cd /tmp/ \
-    && wget https://github.com/root-project/root/archive/v5-34-36.tar.gz \
-    && tar -xvf v5-34-36.tar.gz \
-    && rm -f v5-34-36.tar.gz \
-  	&& cd root-5-34-36/ \
-  	&& ./configure --all --prefix=$ROOTSYS \
-  	&& make -j$(nproc) && make && make install \
-  	&& source bin/thisroot.sh
-
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
 RUN cd /tmp/ \
     && wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 \
@@ -42,6 +35,29 @@ RUN cd /tmp/ \
     && ./configure \
     && make && make install \
     && cp src/parallel /usr/local/bin/
+
+RUN cd /tmp/ \
+    && wget --quiet https://github.com/root-project/root/archive/v6-06-08.tar.gz \
+    && tar -xvf v6-06-08.tar.gz \
+    && rm -rf v6-06-08.tar.gz \
+    && cd /tmp/root* \
+    && mkdir compile \
+    && cd compile \
+    && cmake -Dfortran=ON \
+        -Dpython=ON \
+        -Dcxx11=ON \
+        -Droofit=ON \
+        -Dpython=ON \
+        -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+        -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
+    && make -j$(nproc) && make && make install \
+    && rm -rf /tmp/root
+
+
+RUN pip install --upgrade pip \
+    && pip install jupyter scikit-learn numpy matplotlib
+
+RUN ROOTSYS=$ROOTSYS pip install root-numpy
 
 COPY root-entrypoint.sh /usr/local/sbin
 

@@ -1,4 +1,6 @@
-FROM centos:7
+#tylern4/rootv5:centos6
+FROM centos:6.6
+LABEL maintainer "tylern@jlab.org"
 ENV TERM xterm
 
 ENV ROOTSYS /usr/local/root
@@ -9,13 +11,13 @@ ENV DYLD_LIBRARY_PATH /usr/lib:$ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyr
 ENV PYTHONPATH $PYTHONPATH:$ROOTSYS/lib:$ROOTSYS/bindings/pyroot
 
 RUN yum -y install epel-release && yum -y update \
-    && yum install -y perl git cmake3 gcc-c++ gcc binutils bash \
+    && yum install -y perl git cmake gcc-c++ gcc binutils bash parallel \
     make libX11-devel libXpm-devel libXft-devel libXext-devel xbae-devel libXaw-devel \
     subversion scons patch expat-devel mysql-devel bzip2-devel \
     blas-devel blas-static lapack-devel lapack-static bzip2 tcsh \
     sqlite-devel gcc-gfortran openssl-devel pcre-devel \
     mesa-libGL-devel mesa-libGLU-devel glew-devel ftgl-devel \
-    fftw-devel cfitsio-devel graphviz-devel \
+    fftw-devel cfitsio-devel graphviz-devel which mv \
     avahi-compat-libdns_sd-devel libldap-dev python-devel \
     libxml2-devel gsl-static xz tar file scons openmotif-devel \
     wget libXmu-devel libXp-devel libXt-devel libjpeg-devel libpng-devel \
@@ -24,13 +26,24 @@ RUN yum -y install epel-release && yum -y update \
     && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
 
 RUN cd /tmp/ \
-  && git clone https://github.com/root-project/root.git \
-  && cd root \
-  && mkdir compile \
-  && cd compile \
-  && cmake3 -Dfortran=ON -Dpython=ON -Dcxx11=ON -Droofit=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
-  && make -j$(nproc) && make && make install \
-  && rm -rf /tmp/root
+    && wget https://github.com/root-project/root/archive/v5-34-36.tar.gz \
+    && tar -xvf v5-34-36.tar.gz \
+    && rm -f v5-34-36.tar.gz \
+  	&& cd root-5-34-36/ \
+  	&& ./configure --all --prefix=$ROOTSYS \
+  	&& make -j$(nproc) && make && make install \
+  	&& source bin/thisroot.sh
 
-EXPOSE 22
-ENTRYPOINT cd $ROOTSYS && source bin/thisroot.sh && cd && root -b
+
+RUN cd /tmp/ \
+    && wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 \
+    && tar -xvf parallel-latest.tar.bz2 \
+    && rm -rf parallel-latest.tar.bz2 \
+    && cd parallel-* \
+    && ./configure \
+    && make && make install \
+    && cp src/parallel /usr/local/bin/
+
+COPY root-entrypoint.sh /usr/local/sbin
+
+ENTRYPOINT ["/usr/local/sbin/root-entrypoint.sh"]
