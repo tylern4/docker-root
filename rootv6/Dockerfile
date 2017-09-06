@@ -19,18 +19,54 @@ RUN yum -y install epel-release && yum -y update \
     avahi-compat-libdns_sd-devel libldap-dev python-devel \
     libxml2-devel gsl-static xz tar file scons openmotif-devel \
     wget libXmu-devel libXp-devel libXt-devel libjpeg-devel libpng-devel \
-    tcl tcl-devel tk tk-devel imake libtool \
+    tcl tcl-devel tk tk-devel imake libtool lz4 lz4-devel python-pip zsh \
     && yum clean all \
+    && ln -s /usr/bin/gfortran /usr/bin/g77 \
     && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
 
+
+ENV PYTHIA /usr/local/pythia
+ENV PYTHIA6 $PYTHIA/pythia6
+ENV PYTHIA8 $PYTHIA/pythia8
+ENV PYTHIA8DATA /usr/local/pythia/pythia8/xmldoc
+RUN mkdir $PYTHIA
+
 RUN cd /tmp/ \
-  && git clone https://github.com/root-project/root.git \
-  && cd root \
-  && mkdir compile \
-  && cd compile \
-  && cmake3 -Dfortran=ON -Dpython=ON -Dcxx11=ON -Droofit=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
-  && make -j$(nproc) && make && make install \
-  && rm -rf /tmp/root
+    && wget http://www.hepforge.org/archive/pythia6/pythia-6.4.28.f.gz \
+    && wget https://root.cern.ch/download/pythia6.tar.gz \
+    && tar -xvf pythia6.tar.gz \
+    && gunzip pythia-6.4.28.f.gz \
+    && mv pythia-6.4.28.f pythia6/pythia6416.f \
+    && cd pythia6 \
+    && ./makePythia6.linux \
+    && cd .. \
+    && mv pythia6 $PYTHIA \
+    && rm pythia6.tar.gz
+
+RUN cd /tmp/ \
+    && wget http://home.thep.lu.se/~torbjorn/pythia8/pythia8186.tgz \
+    && tar -xvf pythia8186.tgz \
+    && cd pythia8186 \
+    && ./configure --enable-shared \
+    && make -j$(nproc) \
+    && cd .. \
+    && mv pythia8186 $PYTHIA8 \
+    && rm -rf pythia8186.tgz
+
+RUN cd /tmp/ \
+    && git clone https://github.com/root-project/root.git
+
+RUN cd /tmp/root \
+    && mkdir compile \
+    && cd compile \
+    && cmake3 -Dfortran=ON -Dpython=ON -Dcxx11=ON -Droofit=ON \
+    #-DPYTHIA6_LIBRARY=$PYTHIA6/libPythia6.so -Dpythia6=ON \
+    #-DPYTHIA8_DIR=$PYTHIA8 -DPYTHIA8_INCLUDE_DIR=$PYTHIA8/include -DPYTHIA8_LIBRARY=$PYTHIA8/lib
+    -Dpythia8=ON \
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. | tee /root/config.txt \
+    && make -j$(nproc) | tee /root/build.txt && make && make install \
+    && rm -rf /tmp/root
 
 EXPOSE 22
+
 ENTRYPOINT cd $ROOTSYS && source bin/thisroot.sh && cd && root -b

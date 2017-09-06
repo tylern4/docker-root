@@ -61,52 +61,12 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git svn rsync npm nvm)
+plugins=(git svn rsync)
 
-# User configuration
 
 export PATH="/usr/local/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
-# export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export ZSH_THEME="mh"
-# else
-#   export ZSH_THEME="agnoster"
-# fi
-
-
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-export NVM_DIR="/home/tylern/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
 
 export ROOTSYS=/usr/local/root
 export PATH=$ROOTSYS/bin:$PATH
@@ -114,51 +74,15 @@ export PYTHONDIR=$ROOTSYS
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyroot:$LD_LIBRARY_PATH 
 export PYTHONPATH=$ROOTSYS/lib:$ROOTSYS/build/lib:$ROOTSYS/bindings/pyroot
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$PYTHONDIR/lib:$LD_LIBRARY_PATH
-#export PYTHIA8=/usr/local/pythia
-#export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
 
 export MYSQLLIB=/usr/lib64/mysql
 export TCLINC=/usr/include/tcl
 export MYSQLINC=/usr/include/mysql
 
 export LD_LIBRARY_PATH=/usr/local/root/lib:/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$PYTHIA8/lib:$LD_LIBRARY_PATH
 
+export PYTHIA8=/usr/local/pythia/pythia8
+export PYTHIA8DATA=$PYTHIA8/xmldoc
 
-#ssh aliases
-alias Home='ssh -X tylern@pi0.duckdns.org -p 7000'
-alias phoneHome='ssh -X tylern@172.21.139.155'
-alias Jlab='ssh -X tylern@login.jlab.org'
-alias Raspberry='ssh -X tylern@172.21.139.191'
-alias Update='sudo apt-get -y update | ccze -A; sudo apt-get -y upgrade | ccze -A; sudo apt-get -y dist-upgrade | ccze -A; sudo apt-get -y autoremove | ccze -A;'
-alias LoLUpdate='sudo apt-get -y update | lolcat; sudo apt-get -y upgrade | lolcat; sudo apt-get -y dist-upgrade | lolcat;'
-#login for jlab link
-#alias LinkLogin='ssh -fN -L 7080:localhost:22 tylern@login.jlab.org'
-alias GoodleDns='echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null'
-alias rsync='rsync --partial --progress'
-alias FingerPaint='make | ccze -A'
-alias iotop='sudo iotop | ccze -A'
-alias superman='sudo env PATH=$PATH'
-alias Windows11='VBoxHeadless -s "Windows_10"'
-alias docker_clean='sudo docker rm $(sudo docker ps -a -q) && sudo docker rmi $(sudo docker images -f 'dangling=true' -q)'
-export GOPATH=$HOME/Go
-export PATH=/home/tylern/.local/bin:$PATH:$GOPATH/bin
-export CHROME_REMOTE_DESKTOP_DEFAULT_DESKTOP_SIZES=1024×768
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
-alias open=xdg-open
-export R600_DEBUG='sbcl,hyperz,llvm,sisched,forcedma'
-#source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source /usr/local/share/zsh-navigation-tools/zsh-navigation-tools.plugin.zsh
-#source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-alias R-vm='ssh -p 555 student@vm-hadoop-20.cse.sc.edu'
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-
-
-export PYTHIA8=/usr/local/pythia8223
-export PYTHIA8DATA=/xmldoc
-
-# docker shortcuts
-docker-rm() { docker rm $(docker ps -aq); }
-docker-rmi() { docker rmi $(docker images -f "dangling=true" -q); }
-docker-run() { docker run -it --rm $1; }
-docker-build() { docker build -t $1 .; }
 

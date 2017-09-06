@@ -20,7 +20,7 @@ RUN yum -y install epel-release && yum -y update \
     avahi-compat-libdns_sd-devel libldap-dev python-devel \
     libxml2-devel gsl-static xz tar file scons openmotif-devel \
     wget libXmu-devel libXp-devel libXt-devel libjpeg-devel libpng-devel \
-    tcl tcl-devel tk tk-devel imake libtool \
+    tcl tcl-devel tk tk-devel imake libtool mlocate \
     && yum clean all \
     && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
 
@@ -32,7 +32,6 @@ RUN cd /tmp/ \
   	&& ./configure --all --prefix=$ROOTSYS \
   	&& make -j$(nproc) && make && make install \
   	&& source bin/thisroot.sh
-
 
 RUN cd /tmp/ \
     && wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 \
