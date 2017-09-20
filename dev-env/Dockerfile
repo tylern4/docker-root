@@ -1,5 +1,5 @@
-#FROM tylern4/rootv6:ubuntu_py3
-FROM tylern4/rootv6:centos
+FROM tylern4/rootv6:ubuntu
+#FROM tylern4/rootv6:centos
 LABEL maintainer "tylern@jlab.org"
 
 RUN pip install --upgrade pip setuptools \

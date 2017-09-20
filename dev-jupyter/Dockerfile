@@ -1,34 +1,5 @@
-FROM tylern4/dev-env:centos
+FROM tylern4/dev-env:ubuntu
 LABEL maintainer "tylern@jlab.org"
-
-#RUN apt-get install -y libblas-dev liblapack-dev
-
-#RUN pip install --upgrade pip \
-#    && pip install --upgrade --force-reinstall --ignore-installed --no-binary :all: \
-#    termcolor \
-#    colorama \
-#    tqdm \
-#    cython \
-#    iminuit \
-#    rootpy \
-#    numpy \
-#    pandas \
-#    dask \
-#    scipy \
-#    jupyter \
-#    jupyterhub \
-#    jupyterlab \
-#    ipyparallel \
-#    bokeh \
-#    networkx \
-#    ggplot \
-#    matplotlib \
-#    plotly \
-#    brewer2mpl \
-#    scikit-learn \
-#    scikit-build \
-#    seaborn
-
 
 RUN pip install jupyter \
     ipyparallel

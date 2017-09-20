@@ -29,6 +29,7 @@ ENV PYTHIA /usr/local/pythia
 ENV PYTHIA6 $PYTHIA/pythia6
 ENV PYTHIA8 $PYTHIA/pythia8
 ENV PYTHIA8DATA /usr/local/pythia/pythia8/xmldoc
+ENV PYTHIAVERSION pythia82
 RUN mkdir $PYTHIA
 
 RUN cd /tmp/ \
@@ -44,29 +45,28 @@ RUN cd /tmp/ \
     && rm pythia6.tar.gz
 
 RUN cd /tmp/ \
-    && wget http://home.thep.lu.se/~torbjorn/pythia8/pythia8186.tgz \
-    && tar -xvf pythia8186.tgz \
-    && cd pythia8186 \
-    && ./configure --enable-shared \
-    && make -j$(nproc) \
-    && cd .. \
-    && mv pythia8186 $PYTHIA8 \
-    && rm -rf pythia8186.tgz
-
-RUN cd /tmp/ \
     && git clone https://github.com/root-project/root.git
 
+RUN ln -s /usr/bin/cmake3 /usr/bin/cmake
 RUN cd /tmp/root \
     && mkdir compile \
     && cd compile \
-    && cmake3 -Dfortran=ON -Dpython=ON -Dcxx11=ON -Droofit=ON \
-    #-DPYTHIA6_LIBRARY=$PYTHIA6/libPythia6.so -Dpythia6=ON \
-    #-DPYTHIA8_DIR=$PYTHIA8 -DPYTHIA8_INCLUDE_DIR=$PYTHIA8/include -DPYTHIA8_LIBRARY=$PYTHIA8/lib
-    -Dpythia8=ON \
+    && cmake -Dfortran=ON -Dpython=ON -Dcxx11=ON -Droofit=ON \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. | tee /root/config.txt \
     && make -j$(nproc) | tee /root/build.txt && make && make install \
     && rm -rf /tmp/root
 
-EXPOSE 22
 
-ENTRYPOINT cd $ROOTSYS && source bin/thisroot.sh && cd && root -b
+RUN cd /tmp/ \
+    && wget http://home.thep.lu.se/~torbjorn/pythia8/$PYTHIAVERSION.tgz \
+    && tar -xvf $PYTHIAVERSION.tgz \
+    && cd $PYTHIAVERSION \
+    && ./configure --enable-shared \
+    --with-python --with-python-include=/usr/include/python2.7 \
+    --with-root --with-root-include=/usr/local/root/include --prefix=$PYTHIA8\
+    && make -j$(nproc) \
+    && cd .. \
+    && rm -rf *
+
+ENTRYPOINT ["root.exe","-qb" ]
+#cd $ROOTSYS && source bin/thisroot.sh && cd && root -b

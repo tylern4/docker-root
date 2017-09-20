@@ -79,10 +79,10 @@ export MYSQLLIB=/usr/lib64/mysql
 export TCLINC=/usr/include/tcl
 export MYSQLINC=/usr/include/mysql
 
-export LD_LIBRARY_PATH=/usr/local/root/lib:/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$PYTHIA8/lib:$LD_LIBRARY_PATH
-
-export PYTHIA8=/usr/local/pythia/pythia8
-export PYTHIA8DATA=$PYTHIA8/xmldoc
-
+export LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH
+export PYTHIA=/usr/local/pythia
+export PYTHIA8=$PYTHIA/pythia8
+export PYTHIA8DATA=$PYTHIA8/share/Pythia8/xmldoc
+export PYTHONPATH=$PYTHONPATH:$PYTHIA8/lib
+export LD_LIBRARY_PATH=$PYTHONDIR/lib:$LD_LIBRARY_PATH
 

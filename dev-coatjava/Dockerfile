@@ -17,6 +17,18 @@ WORKDIR /usr/local/clas12-offline-software
 RUN ./build-coatjava.sh
 
 ENV PATH $COATJAVA/bin:$PATH
-COPY bos2evio $COATJAVA/bin/
+
+RUN apt-get install -y scons liblz4-dev
+
+RUN git clone https://github.com/JeffersonLab/jhep.git \
+    && cd jhep \
+    && rm -rf ~/.m2/repository/org/jlab/jhep \
+    && cd jhep-utils ; mvn install; mvn deploy; cd - \
+    && cd jhep-cli   ; mvn install; mvn deploy; cd - \
+    && cd jhep-hipo  ; mvn install; mvn deploy; cd - \
+    && cd jhep-math  ; mvn install; mvn deploy; cd - \
+    && cd jhep-hipo/cpp \
+    && scons -j$(nproc)
+
 WORKDIR /root/
 #ENTRYPOINT ["/bin/zsh"]
