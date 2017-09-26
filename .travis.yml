@@ -1,9 +1,15 @@
 sudo: required
 language: cpp
-
+env:
+  docker:
+  - secure: hZvdt/tUDmG5Xq0fhl2P9AI1JUfF/Iyvkrwk9pumXVSd00EXZP/4TXH/3hpvWtnnFvNuITRDHCp5XpMWCB4L+zBeADsPgVA9bZKBTdmFJPIve81rjrAIEPdk+jq5gkOHkUvRwfKH+qeMmYSGzd+LpXaQRPv1O4AxyYgSUf9oGsxocfKt4StHrN+uG2sv6nOYRRo8w5pKZ8Xn2nnT5+KoNtBOxAuNEG8vnesRpgkzAXEndbSXquIBgBwqQnBIZQz4a2k42HIO34W312GSLRgUo11VBtqQWOMf7GIj2XHi/bSM63Ix3QL3bYo4ALUHNzpOb6kLaUDnnyHYtEWAJNNsm3l7lrWKiforWHh0hy1gBSjNFbCAmLIrE+EBR+OkGjCNng3JBTVxlA0NWIU9CKjMWL9WzHKCQKw0WQ8TU+hkt7uuaDdS5zHt1Z3LB8QLwbj+36eaMOjkmsUuxeEN695mcQVJiX357FfiqFcSovSXGcWE37tz2Ic9rqkgPMb/5wUh/dPc9OccmJjDYu6sa7uIQRHjZ0/ugCO7OYzXBXXUabOUWFFRD20HIuuCSh1CvONqQUXYUnuTkyuZe3A0Q2WM9W6X77H2c0ZHDAhHq1B6W+2qhI6vNy7/HfTz0Js8Gn3D1o1zX8gBinQ/PGC4x7ScCK9cqLu/zl+H2KO1pf9hVCs=
+  - secure: r6NtgLdCufK5mTl+ZjYRSnP5p593qaFwt8HwUZBDebkEKIzya7yk00u/BP2ei0tBkNwVJTvrz86/qbioAQFNYc+ASL17jxplCswWM3CRyY482R3hAFcthfq1tXnSsdZj1H8cHvmtHLNSMmYgo5joSO+ZglqMmn0cqTo/1CyXTNEdt4JZe4vzAJ9ChjsN/Btyw/urqN9i/FHmNdweaLM5buOY8NtT/Yi/EyDxl052tMS1oQ6RBNWCq+nZ8ikb+/RozrtKHktDotMqu4wk09Otxf+V7YcstHjMbU8OSN0DgmVAFCweFeW1jUnomZ+Qew7sLSd+wbWVQrpRIKmc2P97cI/a+BtF1emY+V2oVUlQ2xmPPoi4wRy+vatL7fERk0vLvRo9ZpHyYyEpoqKR7tl8t5VL1z8F74zNY9QsC9ax3G7h+ZASMO2lWKg684epwMzzfZPmbjL7jzFl41t/bm4XW4riaf4Sr0XbUjLDKqHxPnRdfdy1aajsvgX61JiYjXAOy2LRcm5qSVkIhUXPGGM6L9VUQMPbrgxgubFZo5wOz/JDihsldoVX+xlYdRluoSzc7FQe89EvUmaKRMMIGZY7F5AXyweRD8ws2iQER9eSAWW0cRFj71zyqx2U08W3lSh/a/L7zuUxj02kqSSV8ifKdG7pceQ8dLqwNPtJhEXmJBs=
 services:
-    - docker
-
+- docker
 script:
-    - docker build -t tylern4/docker-root dev-coatjava/.
-    - docker images -a
+- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+- docker build -t tylern4/dev-env:ubuntu dev-env/.
+- docker build -t tylern4/dev-jupyter dev-jupyter/.
+- docker images -a
+- docker push tylern4/dev-env:ubuntu
+- docker push tylern4/dev-jupyter
