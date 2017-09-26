@@ -26,11 +26,13 @@ RUN pip install --upgrade pip setuptools \
       scikit-build \
       seaborn \
       root2matplot \
+      biopython \
+      pymongo
+
+RUN pip install \
       sqlalchemy \
       psycopg2 \
-      pymongo \
-      odo \
-      biopython
+      odo 
 
 RUN ROOTSYS=$ROOTSYS pip install root-numpy
 
