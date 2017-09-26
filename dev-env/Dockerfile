@@ -18,7 +18,6 @@ RUN pip install --upgrade pip setuptools \
       ipyparallel \
       bokeh \
       networkx \
-      ggplot \
       matplotlib \
       plotly \
       brewer2mpl \
@@ -32,6 +31,7 @@ RUN pip install --upgrade pip setuptools \
 RUN pip install \
       sqlalchemy \
       psycopg2 \
+      ggplot \
       odo 
 
 RUN ROOTSYS=$ROOTSYS pip install root-numpy
