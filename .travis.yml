@@ -1,7 +1,5 @@
 sudo: required
 language: cpp
-before_install:
-  - eval "$(curl -sL https://raw.github.com/fniephaus/travis-remote-shell/master/run.sh)"
 services:
 - docker
 script:
