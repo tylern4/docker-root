@@ -3,8 +3,8 @@ FROM tylern4/rootv6:ubuntu
 LABEL maintainer "tylern@jlab.org"
 
 RUN pip install --upgrade pip setuptools \
-    # && pip install --upgrade --force-reinstall --ignore-installed --no-binary :all: \
-    && pip install \
+    && pip install -U --no-binary :all: \
+    #&& pip install \
       termcolor \
       colorama \
       tqdm \

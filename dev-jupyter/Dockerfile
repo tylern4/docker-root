@@ -1,7 +1,8 @@
 FROM tylern4/dev-env:ubuntu
 LABEL maintainer "tylern@jlab.org"
 
-RUN pip install jupyter \
+RUN pip install -U --no-binary :all: \
+    jupyter \
     ipyparallel
 
 RUN ipcluster nbextension enable
