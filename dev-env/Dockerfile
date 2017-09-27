@@ -3,8 +3,9 @@ FROM tylern4/rootv6:ubuntu
 LABEL maintainer "tylern@jlab.org"
 
 RUN pip install --upgrade pip setuptools \
-    && pip install -U --no-binary :all: \
-    #&& pip install \
+    #&& pip install -U --no-binary :all: \
+    && pip install \
+      numba \
       termcolor \
       colorama \
       tqdm \
@@ -14,23 +15,21 @@ RUN pip install --upgrade pip setuptools \
       numpy \
       pandas \
       dask \
-      scipy \
       ipyparallel \
       bokeh \
       networkx \
       matplotlib \
       plotly \
       brewer2mpl \
-      scikit-learn \
-      scikit-build \
       seaborn \
       root2matplot \
       biopython \
-      pymongo
-
-RUN pip install \
+      pymongo \
       sqlalchemy \
       psycopg2 \
+      scipy \
+      scikit-learn \
+      scikit-build \
       ggplot \
       odo 
 
