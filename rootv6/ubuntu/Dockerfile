@@ -37,7 +37,7 @@ RUN wget --quiet https://github.com/root-project/root/archive/v6-06-08.tar.gz \
         -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
         -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
     && make -j$(nproc) && make && make install \
-    && rm -rf /tmp/root
+    && rm -rf /tmp/*
 
 
 ENV PYTHIA /usr/local/pythia
