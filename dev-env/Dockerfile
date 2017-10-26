@@ -1,5 +1,4 @@
 FROM tylern4/rootv6:ubuntu
-#FROM tylern4/rootv6:centos
 LABEL maintainer "tylern@jlab.org"
 
 RUN pip install --upgrade pip setuptools \
@@ -31,7 +30,7 @@ RUN pip install --upgrade pip setuptools \
       scikit-learn \
       scikit-build \
       ggplot \
-      odo 
+      odo
 
 RUN ROOTSYS=$ROOTSYS pip install root-numpy
 

@@ -1,4 +1,0 @@
-result=( ${(Q)"${(z)$(<<\EO:result
-'arning:'
-EO:result
-)}"} )

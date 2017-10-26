@@ -9,17 +9,16 @@ ENV LD_LIBRARY_PATH $ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyroot:$LD_LIB
 ENV DYLD_LIBRARY_PATH /usr/lib:$ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyroot:$DYLD_LIBRARY_PATH
 ENV PYTHONPATH $PYTHONPATH:$ROOTSYS/lib:$ROOTSYS/bindings/pyroot
 
-RUN apt-get -y update && apt-get -y upgrade \
-    && apt-get -y install apt-utils zsh perl git dpkg-dev cmake g++ gcc \
+RUN apt-get -y update && apt-get -y upgrade && apt-get -y install apt-utils \
+    && apt-get -y install zsh perl git dpkg-dev cmake g++ gcc \
     binutils libx11-dev libxpm-dev \
     libxft-dev libxext-dev gfortran libssl-dev libpcre3-dev \
     xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
     libmysqlclient-dev libfftw3-dev libcfitsio-dev \
     graphviz-dev libavahi-compat-libdnssd-dev \
-    libldap2-dev python-dev python3 python3-dev libxml2-dev libkrb5-dev \
-    libgsl0-dev libqt4-dev python-pip python3-pip wget curl python-tk \
-    texlive-xetex texlive-latex-base \
-    && apt-get clean
+    libldap2-dev python-dev libxml2-dev libkrb5-dev \
+    libgsl0-dev libqt4-dev python-pip wget curl python-tk \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 #RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 WORKDIR /tmp/
@@ -30,10 +29,11 @@ RUN wget --quiet https://github.com/root-project/root/archive/v6-06-08.tar.gz \
     && mkdir compile \
     && cd compile \
     && cmake -Dfortran=ON \
-        -Dpython=ON \
         -Dcxx11=ON \
         -Droofit=ON \
-        -Dpython=ON \
+        -Dxft=OFF \
+        -Dx11=OFF \
+        -Dopengl=OFF \
         -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
         -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
     && make -j$(nproc) && make && make install \
@@ -53,8 +53,8 @@ RUN wget http://home.thep.lu.se/~torbjorn/pythia8/$PYTHIAVERSION.tgz \
     --with-python --with-python-include=/usr/include/python2.7 \
     --with-root --with-root-include=/usr/local/root/include --prefix=$PYTHIA8\
     && make -j$(nproc) && make install \
-    && cd .. \
-    && rm -rf *
+    && rm -rf /tmp/*
+
 ENV PYTHONPATH $PYTHONPATH:$(ls -d $PYTHIA8/* | head -n 1)/lib
 WORKDIR /root/
 COPY root-entrypoint.sh /usr/local/sbin

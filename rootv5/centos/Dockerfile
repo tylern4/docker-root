@@ -1,5 +1,4 @@
-#tylern4/rootv5:centos6
-FROM centos:6.6
+FROM centos:6.9
 LABEL maintainer "tylern@jlab.org"
 ENV TERM xterm
 
@@ -32,7 +31,7 @@ RUN cd /tmp/ \
   	&& cd root-5-34-36/ \
   	&& ./configure --all --prefix=$ROOTSYS \
   	&& make -j$(nproc) && make && make install \
-  	&& source bin/thisroot.sh
+    && rm -rf /tmp/*
 
 RUN cd /tmp/ \
     && wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 \
@@ -41,7 +40,8 @@ RUN cd /tmp/ \
     && cd parallel-* \
     && ./configure \
     && make && make install \
-    && cp src/parallel /usr/local/bin/
+    && cp src/parallel /usr/local/bin/ \
+    && rm -rf /tmp/*
 
 COPY root-entrypoint.sh /usr/local/sbin
 
