@@ -1,4 +1,4 @@
-FROM centos:6.9
+FROM centos:6.6
 LABEL maintainer "tylern@jlab.org"
 ENV TERM xterm
 

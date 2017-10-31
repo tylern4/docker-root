@@ -33,9 +33,10 @@ IMAGE=${IM_PATH}/${NAME}.img
 
 #If there is an image remove it
 if [ -f "${IMAGE}" ]; then
-    echo sudo rm -rf ${IMAGE}
+    echo -e $RED"deleting image"$DEF
+    sudo rm -rf ${IMAGE}
 fi
 
 #Create image and build software inside it
-sudo singularity create --size 7000 ${IMAGE}
+sudo singularity create --size 2800 ${IMAGE}
 sudo singularity bootstrap ${IMAGE} dev-env.def

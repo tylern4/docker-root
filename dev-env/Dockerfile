@@ -3,7 +3,8 @@ LABEL maintainer "tylern@jlab.org"
 
 RUN pip install --upgrade pip setuptools \
     #&& pip install -U --no-binary :all: \
-    && pip install \
+    && pip install -U \
+      mpi4py \
       numba \
       termcolor \
       colorama \

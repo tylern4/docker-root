@@ -120,7 +120,7 @@ c.NotebookApp.notebook_dir = u'/home/tylern/code/'
 #   from IPython.lib import passwd; passwd()
 #
 # The string should be of the form type:salt:hashed-password.
-c.NotebookApp.password = u'sha1:0943b4aac34d:6ac270548068c18afa16d9f9cbb264a9ecf4c2b2'
+c.NotebookApp.password = u'sha1:fd78af572217:eba322858b6096f3324f29923f501bf55db0278e'
 
 # Set the Access-Control-Allow-Credentials: true header
 # c.NotebookApp.allow_credentials = False
