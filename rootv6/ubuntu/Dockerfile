@@ -12,7 +12,7 @@ ENV PYTHONPATH $PYTHONPATH:$ROOTSYS/lib:$ROOTSYS/bindings/pyroot
 RUN apt-get -y update && apt-get -y upgrade && apt-get -y install --reinstall \
     openmpi-bin libopenmpi-dev apt-utils \
     && apt-get -y install zsh perl git dpkg-dev cmake g++ gcc \
-    binutils libx11-dev libxpm-dev \
+    binutils libx11-dev libxpm-dev scons liblz4-dev \
     libxft-dev libxext-dev gfortran libssl-dev libpcre3-dev locales \
     xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
     libmysqlclient-dev libfftw3-dev libcfitsio-dev \
