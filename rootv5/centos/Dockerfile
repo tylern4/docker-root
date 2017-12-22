@@ -9,20 +9,59 @@ ENV LD_LIBRARY_PATH $ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyroot:$LD_LIB
 ENV DYLD_LIBRARY_PATH /usr/lib:$ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyroot:$DYLD_LIBRARY_PATH
 ENV PYTHONPATH $PYTHONPATH:$ROOTSYS/lib:$ROOTSYS/bindings/pyroot
 
-RUN yum -y install epel-release && yum -y update \
-    && yum install -y perl git cmake gcc-c++ gcc binutils bash parallel \
-    make libX11-devel libXpm-devel libXft-devel libXext-devel xbae-devel libXaw-devel \
-    subversion scons patch expat-devel mysql-devel bzip2-devel \
-    blas-devel blas-static lapack-devel lapack-static bzip2 tcsh \
-    sqlite-devel gcc-gfortran openssl-devel pcre-devel \
-    mesa-libGL-devel mesa-libGLU-devel glew-devel ftgl-devel \
-    fftw-devel cfitsio-devel graphviz-devel which mv \
-    avahi-compat-libdns_sd-devel libldap-dev python-devel \
-    libxml2-devel gsl-static xz tar file scons openmotif-devel \
-    wget libXmu-devel libXp-devel libXt-devel libjpeg-devel libpng-devel \
-    tcl tcl-devel tk tk-devel imake libtool mlocate \
-    && yum clean all \
-    && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
+RUN yum -y install epel-release \
+    && yum install -y \
+    which mv wget xz tar file scons bzip2 \
+    bash tcsh \
+    git subversion \
+    cmake make imake \
+    gcc-c++ gcc gcc-gfortran \
+    perl \
+    binutils \
+    parallel \
+    libX11-devel \
+    libXpm-devel \
+    libXft-devel \
+    libXext-devel \
+    xbae-devel \
+    libXaw-devel \
+    patch \
+    expat-devel \
+    mysql-devel \
+    bzip2-devel \
+    blas-devel \
+    blas-static \
+    lapack-devel \
+    lapack-static \
+    sqlite-devel \
+    openssl-devel \
+    pcre-devel \
+    mesa-libGL-devel \
+    mesa-libGLU-devel \
+    glew-devel \
+    ftgl-devel \
+    fftw-devel \
+    cfitsio-devel \
+    graphviz-devel \
+    avahi-compat-libdns_sd-devel \
+    libldap-dev \
+    python-devel \
+    libxml2-devel \
+    gsl-static \
+    openmotif-devel \
+    libXmu-devel \
+    libXp-devel \
+    libXt-devel \
+    libjpeg-devel \
+    libpng-devel \
+    tcl \
+    tcl-devel \
+    tk \
+    tk-devel \
+    libtool \
+    mlocate \
+    && rm -rf /var/cache/* \
+    && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a 
 
 RUN cd /tmp/ \
     && wget https://github.com/root-project/root/archive/v5-34-36.tar.gz \
@@ -31,17 +70,7 @@ RUN cd /tmp/ \
   	&& cd root-5-34-36/ \
   	&& ./configure --all --prefix=$ROOTSYS \
   	&& make -j$(nproc) && make && make install \
-    && rm -rf /tmp/*
-
-RUN cd /tmp/ \
-    && wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 \
-    && tar -xvf parallel-latest.tar.bz2 \
-    && rm -rf parallel-latest.tar.bz2 \
-    && cd parallel-* \
-    && ./configure \
-    && make && make install \
-    && cp src/parallel /usr/local/bin/ \
-    && rm -rf /tmp/*
+    && rm -rf /tmp/* 
 
 COPY root-entrypoint.sh /usr/local/sbin
 
