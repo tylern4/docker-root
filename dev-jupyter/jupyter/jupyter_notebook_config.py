@@ -81,7 +81,7 @@ c.NotebookApp.port = 9999
 # c.NotebookApp.allow_origin_pat = ''
 
 # The full path to an SSL/TLS certificate file.
-c.NotebookApp.certfile = u'/home/tylern/.jupyter/mycert.pem'
+c.NotebookApp.certfile = u'/home/jupyter/.jupyter/mycert.pem'
 
 # The base URL for the notebook server.
 #
@@ -89,7 +89,7 @@ c.NotebookApp.certfile = u'/home/tylern/.jupyter/mycert.pem'
 # c.NotebookApp.base_url = '/'
 
 # The directory to use for notebooks and kernels.
-c.NotebookApp.notebook_dir = u'/home/tylern/code/'
+c.NotebookApp.notebook_dir = u'/home/jupyter/code/'
 
 #
 # c.NotebookApp.file_to_run = ''
@@ -120,7 +120,7 @@ c.NotebookApp.notebook_dir = u'/home/tylern/code/'
 #   from IPython.lib import passwd; passwd()
 #
 # The string should be of the form type:salt:hashed-password.
-c.NotebookApp.password = u'sha1:fd78af572217:eba322858b6096f3324f29923f501bf55db0278e'
+c.NotebookApp.password = u'sha1:e8cfb1bb0c05:163f8052e1a128685afd6b966295951b02f8ea41'
 
 # Set the Access-Control-Allow-Credentials: true header
 # c.NotebookApp.allow_credentials = False
@@ -517,7 +517,7 @@ c.IPKernelApp.pylab = 'inline'
 #     to the contents of the file.
 
 # Username for the Session. Default is your system username.
-# c.Session.username = u'tylern'
+# c.Session.username = u'jupyter'
 
 # The name of the unpacker for unserializing messages. Only used with custom
 # functions for `packer`.
@@ -607,7 +607,7 @@ c.IPKernelApp.pylab = 'inline'
 # MappingKernelManager will inherit config from: MultiKernelManager
 
 #
-# c.MappingKernelManager.root_dir = u'/home/tylern/physics_code/ipython'
+# c.MappingKernelManager.root_dir = u'/home/jupyter/'
 
 # The kernel manager class.  This is configurable to allow subclassing of the
 # KernelManager for customized behavior.
@@ -644,7 +644,7 @@ c.IPKernelApp.pylab = 'inline'
 # c.FileNotebookManager.save_script = False
 
 #
-# c.FileNotebookManager.notebook_dir = u'/home/tylern/physics_code/ipython'
+# c.FileNotebookManager.notebook_dir = u'/home/jupyter'
 
 #------------------------------------------------------------------------------
 # NotebookNotary configuration

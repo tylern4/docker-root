@@ -2,36 +2,13 @@ FROM tylern4/rootv6:ubuntu
 LABEL maintainer "tylern@jlab.org"
 
 RUN pip install --upgrade pip setuptools \
-    #&& pip install -U --no-binary :all: \
-    && pip install -U \
-      mpi4py \
-      numba \
-      termcolor \
-      colorama \
-      tqdm \
-      cython \
-      iminuit \
+    && pip --no-cache-dir install -U \
       rootpy \
       numpy \
       pandas \
-      dask \
-      ipyparallel \
-      bokeh \
-      networkx \
       matplotlib \
-      plotly \
-      brewer2mpl \
-      seaborn \
-      root2matplot \
-      biopython \
-      pymongo \
-      sqlalchemy \
-      psycopg2 \
       scipy \
-      scikit-learn \
-      scikit-build \
-      ggplot \
-      odo
+      scikit-learn
 
 RUN ROOTSYS=$ROOTSYS pip install root-numpy
 
