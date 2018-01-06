@@ -7,7 +7,8 @@ docker run -p 9999:9999 -v$HOME/jupyter_notebooks:/home/jupyter/code --rm -d tyl
 ```
 This will start the notebook running as a daemon available at [https://your-local-ip:9999](https://localhost:9999), which will be available to any computer on the network. You can change this by adding the ` --NotebookApp.ip='127.0.0.1' ` option to the end if you only want to have the notebook availible on your local machine.
 
-There is a default password of `jupyter` however this is also configurable by adding the \ `--NotebookApp.password='sha1:....'` option to the end of the command, where `'sha1:....'` comes from running the following command in a python terminal:
+There is a default password of `jupyter` however this is also configurable by adding the
+`--NotebookApp.password='sha1:....'` option to the end of the command, where `'sha1:....'` comes from running the following command in a python terminal:
 
 ```python
 from notebook.auth import passwd
