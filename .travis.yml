@@ -4,8 +4,9 @@ services:
 - docker
 script:
 - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-- docker build -t tylern4/dev-env:ubuntu dev-env/.
-- docker build -t tylern4/dev-jupyter dev-jupyter/.
+- docker build -t tylern4/rootv6:6_12_02_py3 rootv6/python3/.
+- docker build -t tylern4/dev-env:ubuntu rootv6/python3/dev-env/.
+- docker build -t tylern4/dev-jupyter rootv6/python3/dev-jupyter/.
 - docker images -a
-- docker push tylern4/dev-env:ubuntu
-- docker push tylern4/dev-jupyter
+- docker push tylern4/dev-env:python3
+- docker push tylern4/dev-jupyter:python3
