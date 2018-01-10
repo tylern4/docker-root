@@ -1,4 +1,4 @@
-FROM tylern4/rootv6:ubuntu
+FROM tylern4/rootv6:centos7
 LABEL maintainer "tylern@jlab.org"
 
 RUN pip install --upgrade pip setuptools \
@@ -8,7 +8,29 @@ RUN pip install --upgrade pip setuptools \
       pandas \
       matplotlib \
       scipy \
-      scikit-learn
+      scikit-learn \
+      ipyparallel \
+      sqlalchemy \
+      pymongo \
+      mpi4py \
+      numba \
+      termcolor \
+      colorama \
+      tqdm \
+      cython \
+      iminuit \
+      rootpy \
+      numpy \
+      pandas \
+      dask \
+      bokeh \
+      networkx \
+      plotly \
+      brewer2mpl \
+      seaborn \
+      root2matplot \
+      ggplot \
+      odo
 
 RUN ROOTSYS=$ROOTSYS pip install root-numpy
 

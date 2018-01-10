@@ -1,4 +1,3 @@
-#tylern4/rootv6:centos7_py3
 FROM centos:7
 LABEL maintainer "tylern@jlab.org"
 ENV TERM xterm
@@ -21,43 +20,40 @@ RUN yum -y install epel-release && yum -y update \
     avahi-compat-libdns_sd-devel libldap-dev python-devel \
     libxml2-devel gsl-static xz tar file scons openmotif-devel \
     wget libXmu-devel libXp-devel libXt-devel libjpeg-devel libpng-devel \
-    tcl tcl-devel tk tk-devel imake libtool \
+    tcl tcl-devel tk tk-devel imake libtool openmpi openmpi-devel \
     python-pip python-wheel python3-pip python3 python3-wheel \
-    && yum clean all
+    && yum clean all && rm -rf /var/cache/yum
 
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-
-RUN cd /tmp/ \
-    && wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 \
-    && tar -xvf parallel-latest.tar.bz2 \
-    && rm -rf parallel-latest.tar.bz2 \
-    && cd parallel-* \
-    && ./configure \
-    && make && make install \
-    && cp src/parallel /usr/local/bin/
-
-RUN cd /tmp/ \
-    && wget --quiet https://github.com/root-project/root/archive/v6-06-08.tar.gz \
-    && tar -xvf v6-06-08.tar.gz \
+WORKDIR /tmp/
+RUN wget --quiet https://github.com/root-project/root/archive/v6-06-08.tar.gz \
+    && tar -xf v6-06-08.tar.gz \
     && rm -rf v6-06-08.tar.gz \
     && cd /tmp/root* \
     && mkdir compile \
     && cd compile \
-    && cmake -Dfortran=ON \
-        -Dpython=ON \
-        -Dcxx11=ON \
-        -Droofit=ON \
-        -Dpython=ON \
+    && cmake \
         -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
         -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/root .. \
     && make -j$(nproc) && make && make install \
-    && rm -rf /tmp/root
+    && rm -rf /tmp/*
 
+ENV PYTHIA /usr/local/pythia
+ENV PYTHIA8 $PYTHIA/pythia8
+ENV PYTHIA8DATA /usr/local/pythia/pythia8/xmldoc
+ENV PYTHIAVERSION pythia82
+RUN mkdir $PYTHIA
 
-RUN pip install --upgrade pip \
-    && pip install jupyter scikit-learn numpy matplotlib
+RUN curl -o $PYTHIAVERSION.tgz http://home.thep.lu.se/~torbjorn/pythia8/$PYTHIAVERSION.tgz \
+    && tar -xvf $PYTHIAVERSION.tgz \
+    && rm -rf $PYTHIAVERSION.tgz \
+    && cd pythia* \
+    && ./configure --enable-shared \
+    --with-python --with-python-include=/usr/include/python2.7 \
+    --with-root --with-root-include=/usr/local/root/include --prefix=$PYTHIA8\
+    && make -j$(nproc) && make install \
+    && rm -rf /tmp/*
 
-RUN ROOTSYS=$ROOTSYS pip install root-numpy
+ENV PYTHONPATH $PYTHONPATH:$(ls -d $PYTHIA8/* | head -n 1)/lib
 
 COPY root-entrypoint.sh /usr/local/sbin
 

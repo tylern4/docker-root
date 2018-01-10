@@ -3,8 +3,8 @@ LABEL maintainer "tylern@jlab.org"
 
 RUN pip install --upgrade pip setuptools \
     && pip --no-cache-dir install -U \
-	rootpy \
-	numpy \
+	  rootpy \
+	  numpy \
     pandas \
     matplotlib \
     scikit-learn \
@@ -50,7 +50,7 @@ COPY ipython.sh /home/$NB_USER/.jupyter/
 RUN mkdir -p /home/$NB_USER/work && \
     chown -R $NB_USER /home/$NB_USER/.jupyter && \
     mkdir -p /home/$NB_USER/code && \
-    echo "cacert=/etc/ssl/certs/ca-certificates.crt" > /home/$NB_USER/.curlrc 
+    echo "cacert=/etc/ssl/certs/ca-certificates.crt" > /home/$NB_USER/.curlrc
 
 EXPOSE 9999
 RUN chown -R $NB_USER:users /home/$NB_USER/.jupyter
