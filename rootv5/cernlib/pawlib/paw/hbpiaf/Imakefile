@@ -1,3 +1,0 @@
-SRCS_F=	hf1.F hf1n.F hf2.F hfill.F hfind.F
-
-AllTarget ($(OBJS))

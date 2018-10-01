@@ -1,3 +1,0 @@
-SRCS_C=	 dlfcnc.c
-
-SubdirLibraryTarget(NullParameter,NullParameter)

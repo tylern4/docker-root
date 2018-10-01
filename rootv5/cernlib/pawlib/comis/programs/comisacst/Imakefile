@@ -1,3 +1,0 @@
-SRCS_F=	 create.F cst.F nident.F proced.F put.F
-
-SubdirLibraryTarget(NullParameter,NullParameter)

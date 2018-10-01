@@ -1,4 +1,0 @@
-      SUBROUTINE HKFIL2(LINE,ID1,X,Y,W)
-      CALL HF2(ID1,X,Y,W)
-      CALL HFIDP(ID1,X,Y,W)
-      END

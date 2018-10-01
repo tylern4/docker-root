@@ -1,3 +1,0 @@
-SRCS_F=	 lzfval.F zsorth.F zsorvh.F
-
-SubdirLibraryTarget(NullParameter,NullParameter)

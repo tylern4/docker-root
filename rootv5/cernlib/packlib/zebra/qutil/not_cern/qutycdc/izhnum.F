@@ -1,9 +1,0 @@
-      SUBROUTINE IZHNUM (HOLL,INTV,NP)
-
-      INTEGER      INTV(99), HOLL(99)
-
-
-      DO 39  JWH=1,NP
-   39 INTV(JWH) = SHIFT (HOLL(JWH), 6) .AND. 63
-      RETURN
-      END
