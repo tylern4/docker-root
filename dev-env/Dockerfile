@@ -1,41 +1,19 @@
-FROM tylern4/rootv6:ubuntu
+FROM tylern4/rootv6:py3
 LABEL maintainer "tylern@jlab.org"
-COPY zshrc /root/.zshrc
-COPY oh-my-zsh /root/.oh-my-zsh
+COPY zshrc /home/user/.zshrc
+COPY oh-my-zsh /home/user/.oh-my-zsh
 
-RUN pip3 install --upgrade pip setuptools \
-    && pip3 --no-cache-dir install -U \
-      numpy \
-      pandas \
-      matplotlib \
-      scipy \
-      scikit-learn \
-      ipyparallel \
-      mpi4py \
-      numba \
-      termcolor \
-      colorama \
-      tqdm \
-      cython \
-      iminuit \
-      dask \
-      xarray \
-      bokeh \
-      plotly \
-      seaborn \
-      ggplot \
-      odo
-
+USER root
 RUN ROOTSYS=$ROOTSYS pip3 install root-numpy uproot rootpy
+RUN rm -rf /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python 
 
-WORKDIR /usr/local/src/
-RUN git clone https://github.com/tylern4/hipopy.git \
-    && cd hipopy \
+COPY physics_code /usr/local/src/physics_code
+RUN cd /usr/local/src/physics_code/current \
     && mkdir build \
-    && cd build \
-    && cmake .. \
+    && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/physics \
     && make -j$(nproc) \
     && make install
 
-WORKDIR /root/code
+USER user
+WORKDIR /home/user
 ENTRYPOINT ["/bin/zsh"]

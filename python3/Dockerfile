@@ -4,10 +4,10 @@ LABEL maintainer="tylern@jlab.org"
 ARG NCORES=8
 ARG GIT_TAG=v6-16-00
 
-RUN apt update \
-  && apt install -y \
+RUN apt-get update \
+  && apt-get install -y \
     git dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
-    libxft-dev libxext-dev \
+    libxft-dev libxext-dev zsh \
     gfortran libssl-dev libpcre3-dev \
     xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
     libmysqlclient-dev libfftw3-dev libcfitsio-dev \
@@ -57,6 +57,9 @@ RUN pip3 install \
     seaborn \
     ggplot \
     statsmodels
+
+RUN ROOTSYS=$ROOTSYS pip3 install root-numpy uproot rootpy
+RUN rm -rf /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
 
 RUN useradd -m user && chmod a+w /home/user
 USER user
