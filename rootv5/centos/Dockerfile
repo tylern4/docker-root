@@ -11,10 +11,10 @@ ENV PYTHONPATH $PYTHONPATH:$ROOTSYS/lib:$ROOTSYS/bindings/pyroot
 
 RUN yum -y install epel-release \
     && yum install -y \
-    which mv wget xz tar file scons bzip2 \
+    which mv wget vim emacs xz tar file scons bzip2 \
     bash tcsh \
     git subversion \
-    cmake make imake \
+    cmake make imake patch \
     gcc-c++ gcc gcc-gfortran \
     perl \
     xbae-devel \
@@ -35,42 +35,42 @@ RUN yum -y install epel-release \
     libtool \
     mlocate \
     openmotif-devel \
-    #binutils \
-    #libX11-devel \
-    #libXpm-devel \
-    #libXft-devel \
-    #libXext-devel \
-    #patch \
-    #expat-devel \
-    #bzip2-devel \
-    #sqlite-devel \
-    #openssl-devel \
-    #pcre-devel \
-    #mesa-libGL-devel \
-    #mesa-libGLU-devel \
-    #glew-devel \
-    #ftgl-devel \
-    #fftw-devel \
-    #cfitsio-devel \
-    #graphviz-devel \
-    #avahi-compat-libdns_sd-devel \
-    #libldap-dev \
-    #libxml2-devel \
-    #gsl-static \
-    #slibXmu-devel \
-    #libXp-devel \
-    #libXt-devel \
+    binutils \
+    libX11-devel \
+    libXpm-devel \
+    libXft-devel \
+    libXext-devel \
+    patch \
+    expat-devel \
+    bzip2-devel \
+    sqlite-devel \
+    openssl-devel \
+    pcre-devel \
+    mesa-libGL-devel \
+    mesa-libGLU-devel \
+    glew-devel \
+    ftgl-devel \
+    fftw-devel \
+    cfitsio-devel \
+    graphviz-devel \
+    avahi-compat-libdns_sd-devel \
+    libldap-dev \
+    libxml2-devel \
+    gsl-static \
+    slibXmu-devel \
+    libXp-devel \
+    libXt-devel \
     && rm -rf /var/cache/* \
-    && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a 
+    && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
 
 RUN cd /tmp/ \
     && wget https://github.com/root-project/root/archive/v5-34-36.tar.gz \
     && tar -xvf v5-34-36.tar.gz \
     && rm -f v5-34-36.tar.gz \
   	&& cd root-5-34-36/ \
-  	&& ./configure --all --disable-x11 --prefix=$ROOTSYS \
+  	&& ./configure --all --prefix=$ROOTSYS \
   	&& make -j$(nproc) && make && make install \
-    && rm -rf /tmp/* 
+    && rm -rf /tmp/*
 
 COPY root-entrypoint.sh /usr/local/sbin
 

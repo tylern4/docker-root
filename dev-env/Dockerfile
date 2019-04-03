@@ -1,17 +1,16 @@
-FROM tylern4/rootv6:centos7
+FROM tylern4/rootv6:ubuntu
 LABEL maintainer "tylern@jlab.org"
+COPY zshrc /root/.zshrc
+COPY oh-my-zsh /root/.oh-my-zsh
 
-RUN pip install --upgrade pip setuptools \
-    && pip --no-cache-dir install -U \
-      rootpy \
+RUN pip3 install --upgrade pip setuptools \
+    && pip3 --no-cache-dir install -U \
       numpy \
       pandas \
       matplotlib \
       scipy \
       scikit-learn \
       ipyparallel \
-      sqlalchemy \
-      pymongo \
       mpi4py \
       numba \
       termcolor \
@@ -19,24 +18,24 @@ RUN pip install --upgrade pip setuptools \
       tqdm \
       cython \
       iminuit \
-      rootpy \
-      numpy \
-      pandas \
       dask \
+      xarray \
       bokeh \
-      networkx \
       plotly \
-      brewer2mpl \
       seaborn \
-      root2matplot \
       ggplot \
       odo
 
-RUN ROOTSYS=$ROOTSYS pip install root-numpy
+RUN ROOTSYS=$ROOTSYS pip3 install root-numpy uproot rootpy
 
-COPY zshrc /root/.zshrc
-copy oh-my-zsh /root/.oh-my-zsh
+WORKDIR /usr/local/src/
+RUN git clone https://github.com/tylern4/hipopy.git \
+    && cd hipopy \
+    && mkdir build \
+    && cd build \
+    && cmake .. \
+    && make -j$(nproc) \
+    && make install
 
 WORKDIR /root/code
-
 ENTRYPOINT ["/bin/zsh"]

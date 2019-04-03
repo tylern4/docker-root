@@ -1,4 +1,5 @@
-FROM python:3.6.4-jessie
+#FROM python:3.6.4-jessie
+FROM pypy:3-5-slim
 LABEL maintainer "tylern@jlab.org"
 ENV TERM xterm
 
@@ -17,7 +18,7 @@ RUN apt-get -y update && apt-get -y install --reinstall \
     xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
     libmysqlclient-dev libfftw3-dev libcfitsio-dev \
     graphviz-dev libavahi-compat-libdnssd-dev \
-    libldap2-dev libxml2-dev libkrb5-dev \
+    libldap2-dev parallel libxml2-dev libkrb5-dev \
     libgsl0-dev libqt4-dev wget libopenmpi-dev xz-utils \
     && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 

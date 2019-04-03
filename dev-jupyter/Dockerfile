@@ -1,8 +1,7 @@
 FROM tylern4/rootv6:ubuntu
 LABEL maintainer "tylern@jlab.org"
 
-RUN pip install --upgrade pip setuptools \
-    && pip --no-cache-dir install -U \
+RUN pip --no-cache-dir install -U \
 	  rootpy \
 	  numpy \
     pandas \
