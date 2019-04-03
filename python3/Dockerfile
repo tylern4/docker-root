@@ -61,7 +61,8 @@ RUN pip3 install \
 RUN useradd -m user && chmod a+w /home/user
 USER user
 WORKDIR /home/user
-
+RUN mkdir -p /home/user/.local/share/jupyter/kernels 
+RUN cp -r $ROOTSYS/etc/notebook/kernels/root /home/user/.local/share/jupyter/kernels
 ADD entry_point.sh /usr/local/bin/entry_point.sh
 ENTRYPOINT ["/usr/local/bin/entry_point.sh"]
 CMD ["ipython3"]
