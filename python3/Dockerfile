@@ -56,7 +56,10 @@ RUN pip3 install \
     bokeh \
     seaborn \
     ggplot \
-    statsmodels
+    statsmodels \
+    metakernel \
+    phasespace \
+    lmfit
 
 RUN ROOTSYS=$ROOTSYS pip3 install root-numpy uproot rootpy
 RUN rm -rf /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
