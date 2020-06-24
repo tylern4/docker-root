@@ -1,4 +1,4 @@
-FROM centos:6.6
+FROM centos:6
 LABEL maintainer "tylern@jlab.org"
 ENV TERM xterm
 
@@ -9,12 +9,19 @@ ENV LD_LIBRARY_PATH $ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyroot:$LD_LIB
 ENV DYLD_LIBRARY_PATH /usr/lib:$ROOTSYS/lib:$PYTHONDIR/lib:$ROOTSYS/bindings/pyroot:$DYLD_LIBRARY_PATH
 ENV PYTHONPATH $PYTHONPATH:$ROOTSYS/lib:$ROOTSYS/bindings/pyroot
 
+
 RUN yum -y install epel-release \
     && yum install -y \
+    libjpeg-turbo-devel ed \
+    glibc-devel.i686 glibc-devel \
+    libstdc++-devel libstdc++-devel.i686 \
+    libgfortran-devel libgfortran-devel.i686 \
     which mv wget vim emacs xz tar file scons bzip2 \
     bash tcsh \
     git subversion \
+    valgrind \
     cmake make imake patch \
+    gcc-c++ gcc gcc-gfortran \
     gcc-c++ gcc gcc-gfortran \
     perl \
     xbae-devel \
@@ -60,6 +67,7 @@ RUN yum -y install epel-release \
     slibXmu-devel \
     libXp-devel \
     libXt-devel \
+    cmake3 \
     && rm -rf /var/cache/* \
     && ln -s /usr/lib64/liblapack.a /usr/lib64/liblapack3.a
 
