@@ -1,5 +1,4 @@
-sudo: false
-dist: trusty
+os: linux
 language: cpp
 services:
 - docker
