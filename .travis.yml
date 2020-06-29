@@ -6,6 +6,5 @@ script:
 - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - docker build -t tylern4/rootv5 rootv5/centos
 - docker build -t tylern4/rootv5:centos6 rootv5/centos
-- docker build -t tylern4/rootv5:centos7 rootv5/centos7
 - docker images -a
 - docker push tylern4/rootv5
