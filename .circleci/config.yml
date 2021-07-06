@@ -10,7 +10,13 @@ jobs:
          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
 
      # build the application image
-     - run: docker build -t tylern4/rootv5:centos7 rootv5/centos7
+     - run: docker build -t tylern4/rootv5:latest rootv5/centos
+     - run: docker build -t tylern4/rootv5:centos rootv5/centos
+     # - run: docker build -t tylern4/rootv5:centos7 rootv5/centos7
+     # - run: docker build -t tylern4/rootv6:centos7 rootv6/centos
 
      # deploy the image
-     - run: docker push tylern4/rootv5:centos7
+     - run: docker push tylern4/rootv5:latest
+     - run: docker push tylern4/rootv5:centos
+     # - run: docker push tylern4/rootv5:centos7
+     # - run: docker push tylern4/rootv6:centos7
